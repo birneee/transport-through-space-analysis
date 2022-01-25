@@ -31,12 +31,12 @@ def extend_time(conn: Connection, values: Iterator[tuple[float, any]]) -> Iterat
 
 
 def plot_stream_flow_limit(ax: Axes, conn: Connection, stream_id: int, color: str = '#ff69b4',
-                           label: str | None = 'Sum of stream flow control limits'):
+                           label: str | None = 'Sum of stream flow control limits', linestyle: str = 'solid'):
     start = time.time()
     ms, limits = zip(*extend_time(conn, conn.stream_flow_limit_updates(stream_id)))
     seconds = list(map(lambda m: m / 1000, ms))
     seconds.insert(0, 0)
-    ax.stairs(values=limits, edges=seconds, baseline=None, color=color, label=label)
+    ax.stairs(values=limits, edges=seconds, baseline=None, color=color, label=label, linestyle=linestyle)
     print(f'plotted in {time.time() - start}s')
 
 

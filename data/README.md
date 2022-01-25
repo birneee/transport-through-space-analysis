@@ -1,0 +1,1 @@
+> all qlog files are gzipped, otherwise they would exceed the 100MB file size limit of GitHub

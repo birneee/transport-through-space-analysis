@@ -17,25 +17,27 @@ from .frame import Frame, MaxStreamDataFrame, StreamFrame
 from .recovery import MetricsUpdated
 
 
-def read_qlog(filepath: str, max_ms: float = math.inf) -> Connection:
+def read_qlog(filepath: str, shift_ms: float = 0, max_ms: float = math.inf) -> Connection:
     start = time.time()
     if filepath.endswith('.gz'):
         with gzip.open(filepath) as file:
-            conn = parse_qlog(file, max_ms)
+            conn = parse_qlog(file, shift_ms, max_ms)
     else:
         with open(filepath) as file:
-            conn = parse_qlog(file, max_ms)
+            conn = parse_qlog(file, shift_ms, max_ms)
     print(f'loaded {filepath} in {time.time() - start}s')
     return conn
 
 
-def parse_qlog(reader: TextIO, max_ms: float = math.inf) -> Connection:
+def parse_qlog(reader: TextIO, shift_ms: float = 0, max_ms: float = math.inf) -> Connection:
     qlog_info = json.loads(next(reader))
     raw_events = []
     sent_packet_numbers: dict[int, int] = {}  # packet_number, index in events
     received_packet_numbers: dict[int, int] = {}  # packet_number, index in events
     for index, line in enumerate(reader):
         event = json.loads(line)
+        if shift_ms != 0:
+            event['time'] += shift_ms
         if event['time'] > max_ms:
             break
         raw_events.append(event)
@@ -118,7 +120,7 @@ class Connection:
     def stream_flow_limit_sum_updates(self) -> Iterator[tuple[float, int]]:
         """sum of all stream flow limits"""
         """time in seconds, maximum in bytes"""
-        yield 0, self.remote_initial_max_stream_data_bidi_remote
+        yield 0, self.remote_initial_max_stream_data_bidi_remote or 0
         stream_limits: dict[int, int] = {}
         for frame in self.received_frames:
             match frame.type:
@@ -129,7 +131,7 @@ class Connection:
 
     def stream_flow_limit_updates(self, stream_id: int) -> Iterator[tuple[float, int]]:
         """time in seconds, maximum in bytes"""
-        yield 0, self.remote_initial_max_stream_data_bidi_remote
+        yield 0, self.remote_initial_max_stream_data_bidi_remote or 0
         for frame in self.received_frames:
             match frame.type:
                 case frame_types.MAX_STREAM_DATA:
@@ -143,7 +145,7 @@ class Connection:
                 yield frame.time, frame.inner['maximum']
 
     @property
-    def remote_parameters(self) -> dict:
+    def remote_parameters(self) -> dict | None:
         for event in self.events:
             if event.name == event_names.TRANSPORT_PARAMETERS_SET:
                 data = event.data
