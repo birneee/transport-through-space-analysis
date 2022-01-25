@@ -59,13 +59,22 @@ def plot_congestion_window(ax: Axes, conn: Connection, color: str = '#8a2be2', l
     print(f'plotted in {time.time() - start}s')
 
 
+def plot_rtt(ax: Axes, conn: Connection, color: str = '#ff9900', label: str | None = 'Latest RTT',
+                           linestyle: str = 'solid'):
+    start = time.time()
+    ms, window = zip(*extend_time(conn, conn.rtt_updates))
+    seconds = list(map(lambda m: m / 1000, ms))
+    seconds.insert(0, 0)
+    ax.stairs(values=window, edges=seconds, baseline=None, color=color, label=label, linestyle=linestyle)
+    print(f'plotted in {time.time() - start}s')
+
+
 def plot_bytes_in_flight(ax: Axes, conn: Connection, color: str = '#808000', label: str | None = 'Bytes in flight'):
     start = time.time()
     ms, in_flight = zip(*conn.bytes_in_flight_updates)
     seconds = list(map(lambda m: m / 1000, ms))
     seconds.insert(0, 0)
     ax.stairs(values=in_flight, edges=seconds, baseline=None, color=color, label=label)
-    # ax.scatter(x=seconds, y=in_flight, s=2, rasterized=True, label=label, color=color)
     print(f'plotted in {time.time() - start}s')
 
 

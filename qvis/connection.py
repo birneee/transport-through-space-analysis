@@ -87,18 +87,20 @@ class Connection:
             if event.name == event_names.TRANSPORT_PACKET_SENT:
                 yield Packet(event)
 
-    def receivedPackets(self) -> Iterator[Packet]:
+    @property
+    def received_packets(self) -> Iterator[Packet]:
         for event in self.events:
             if event.name == event_names.TRANSPORT_PACKET_RECEIVED:
                 yield Packet(event)
 
-    def sentFrames(self) -> Iterator[Frame]:
+    @property
+    def sent_frames(self) -> Iterator[Frame]:
         for packet in self.sent_packets:
             for frame in packet.frames:
                 yield frame
 
     def sent_frames_of_type(self, frame_type: str) -> Iterator[Frame]:
-        return filter(lambda f: f.type == frame_type, self.sentFrames())
+        return filter(lambda f: f.type == frame_type, self.sent_frames)
 
     @property
     def sent_stream_frames(self) -> Iterator[StreamFrame]:
@@ -109,17 +111,16 @@ class Connection:
 
     @property
     def received_frames(self) -> Iterator[Frame]:
-        for packet in self.receivedPackets():
+        for packet in self.received_packets:
             for frame in packet.frames:
                 yield frame
 
     def received_frames_of_type(self, frame_type: str) -> Iterator[Frame]:
         return filter(lambda f: f.type == frame_type, self.received_frames)
 
-
     def stream_flow_limit_sum_updates(self) -> Iterator[tuple[float, int]]:
         """sum of all stream flow limits"""
-        """time in seconds, maximum in bytes"""
+        """time in ms, maximum in bytes"""
         yield 0, self.remote_initial_max_stream_data_bidi_remote or 0
         stream_limits: dict[int, int] = {}
         for frame in self.received_frames:
@@ -130,16 +131,17 @@ class Connection:
                     yield frame.time, sum(stream_limits.values())
 
     def stream_flow_limit_updates(self, stream_id: int) -> Iterator[tuple[float, int]]:
-        """time in seconds, maximum in bytes"""
+        """time in ms, maximum in bytes"""
         yield 0, self.remote_initial_max_stream_data_bidi_remote or 0
         for frame in self.received_frames:
             match frame.type:
                 case frame_types.MAX_STREAM_DATA:
                     max_stream_data_frame = MaxStreamDataFrame(frame)
-                    yield frame.time, max_stream_data_frame.maximum
+                    if max_stream_data_frame.stream_id == stream_id:
+                        yield frame.time, max_stream_data_frame.maximum
 
     def connection_flow_limit_updates(self) -> Iterator[tuple[float, int]]:
-        """time in seconds, maximum in bytes"""
+        """time in ms, maximum in bytes"""
         for frame in self.received_frames:
             if frame.type == frame_types.MAX_DATA:
                 yield frame.time, frame.inner['maximum']
@@ -167,7 +169,7 @@ class Connection:
 
     @property
     def bytes_in_flight_updates(self) -> Iterator[tuple[float, int]]:
-        """time in seconds, bytes in flight"""
+        """time in ms, bytes in flight"""
         for event in self.events_of_type(event_names.RECOVERY_METRICS_UPDATED):
             metrics_updated = MetricsUpdated(event)
             bytes_in_flight = metrics_updated.bytes_in_flight
@@ -180,10 +182,19 @@ class Connection:
 
     @property
     def congestion_window_updates(self) -> Iterator[tuple[float, int]]:
-        """time in seconds, maximum in bytes"""
-        """"""
+        """time in ms, maximum in bytes"""
         for event in self.events_of_type(event_names.RECOVERY_METRICS_UPDATED):
             metrics_updated = MetricsUpdated(event)
             congestion_window = metrics_updated.congestion_window
             if congestion_window is not None:
                 yield event.time, congestion_window
+
+    @property
+    def rtt_updates(self) -> Iterator[tuple[float, float]]:
+        """time in ms, latest rtt in ms"""
+        for event in self.events_of_type(event_names.RECOVERY_METRICS_UPDATED):
+            metrics_updated = MetricsUpdated(event)
+            latest_rtt = metrics_updated.latest_rtt
+            if latest_rtt is not None:
+                yield event.time, latest_rtt
+

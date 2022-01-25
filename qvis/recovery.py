@@ -16,3 +16,8 @@ class MetricsUpdated:
     @property
     def bytes_in_flight(self) -> Optional[int]:
         return self.event.data.get('bytes_in_flight')
+
+    @property
+    def latest_rtt(self) -> Optional[float]:
+        """returns rtt in ms"""
+        return self.event.data.get('latest_rtt')
