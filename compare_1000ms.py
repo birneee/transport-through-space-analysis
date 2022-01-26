@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-import time
+import os
 
 import matplotlib
 from matplotlib import pyplot as plt
 
 from qvis.connection import Connection, read_qlog
-from qvis.plot import QvisByteAxisFormatter, QvisTimeAxisFormatter, plot_connection_flow_limit, plot_stream_data_sent, \
-    plot_stream_flow_limit, plot_congestion_window, plot_bytes_in_flight, plot_raw_data_sent
+from qvis.plot import QvisByteAxisFormatter, QvisTimeAxisFormatter, plot_stream_data_sent, \
+    plot_stream_flow_limit
 
 # %% load qlog files
 max_ms = 20000
@@ -22,6 +22,7 @@ plt.rcParams.update({
     "pgf.rcfonts": False,
 })
 fig, ax = plt.subplots()
+ax.axline((0, 0), (1, 100_000_000 / 8), color='gray', linestyle=(0, (1, 10)))
 plot_stream_data_sent(ax, conn, 0, label='No proxy', color='#253c4b')
 plot_stream_data_sent(ax, conn_1p, 0, label='Client-side proxy', color='#00885c')
 plot_stream_data_sent(ax, conn_2p, 0, label='Proxies on both sides', color='#ffa600')
@@ -42,5 +43,7 @@ ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(2))
 ax.yaxis.set_major_formatter(QvisByteAxisFormatter)
 ax.xaxis.set_label_text('Time (s)')
 ax.yaxis.set_label_text('Data (bytes)')
-fig.savefig(f'./plots/compare_1000ms.pdf', bbox_inches='tight', dpi=300)
+output_path = f'./plots/{os.path.splitext(os.path.basename(__file__))[0]}.pdf'
+fig.savefig(output_path, bbox_inches='tight', dpi=300)
+print(f'saved plot as {output_path}')
 plt.plot()

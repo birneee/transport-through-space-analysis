@@ -24,6 +24,7 @@ plt.rcParams.update({
     "pgf.rcfonts": False,
 })
 fig, ax = plt.subplots()
+ax.axline((0, 0), (1, 100_000_000 / 8), color='gray', linestyle=(0, (1, 10)))
 plot_stream_data_sent(ax, conn63, 0, label='$63\,$ms', color='#253C4B')
 plot_stream_data_sent(ax, conn125, 0, label='$125\,$ms', color='#1E5F6F')
 plot_stream_data_sent(ax, conn250, 0, label='$250\,$ms', color='#168293')
@@ -45,6 +46,6 @@ ax.yaxis.set_major_formatter(QvisByteAxisFormatter)
 ax.xaxis.set_label_text('Time (s)')
 ax.yaxis.set_label_text('Data (bytes)')
 output_path = f'./plots/{os.path.splitext(os.path.basename(__file__))[0]}.pdf'
-fig.savefig(f'./plots/{os.path.splitext(os.path.basename(__file__))[0]}.pdf', bbox_inches='tight', dpi=300)
+fig.savefig(output_path, bbox_inches='tight', dpi=300)
 print(f'saved plot as {output_path}')
 plt.plot()
