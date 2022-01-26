@@ -45,7 +45,9 @@ def parse_qlog(reader: TextIO, shift_ms: float = 0, max_ms: float = math.inf) ->
             case event_names.TRANSPORT_PACKET_SENT:
                 sent_packet_numbers[event['data']['header']['packet_number']] = index
             case event_names.TRANSPORT_PACKET_RECEIVED:
-                received_packet_numbers[event['data']['header']['packet_number']] = index
+                packet_number: Optional[int] = event['data']['header'].get('packet_number')
+                if packet_number is not None:  # because retry packets do not have a packet_number
+                    received_packet_numbers[packet_number] = index
             # for frame in p.frames:
             #     if frame.type == "ack":
             #         ack_frame = AckFrame(frame)
@@ -118,6 +120,13 @@ class Connection:
     def received_frames_of_type(self, frame_type: str) -> Iterator[Frame]:
         return filter(lambda f: f.type == frame_type, self.received_frames)
 
+    @property
+    def received_stream_frames(self) -> Iterator[StreamFrame]:
+        return map(lambda f: StreamFrame(f), self.received_frames_of_type(frame_types.STREAM))
+
+    def received_stream_frames_of_stream(self, stream_id: int) -> Iterator[StreamFrame]:
+        return filter(lambda f: f.stream_id == stream_id, self.received_stream_frames)
+
     def stream_flow_limit_sum_updates(self) -> Iterator[tuple[float, int]]:
         """sum of all stream flow limits"""
         """time in ms, maximum in bytes"""
@@ -130,10 +139,20 @@ class Connection:
                     stream_limits[max_stream_data_frame.stream_id] = max_stream_data_frame.maximum
                     yield frame.time, sum(stream_limits.values())
 
-    def stream_flow_limit_updates(self, stream_id: int) -> Iterator[tuple[float, int]]:
+    def remote_stream_flow_limit_updates(self, stream_id: int) -> Iterator[tuple[float, int]]:
         """time in ms, maximum in bytes"""
         yield 0, self.remote_initial_max_stream_data_bidi_remote or 0
         for frame in self.received_frames:
+            match frame.type:
+                case frame_types.MAX_STREAM_DATA:
+                    max_stream_data_frame = MaxStreamDataFrame(frame)
+                    if max_stream_data_frame.stream_id == stream_id:
+                        yield frame.time, max_stream_data_frame.maximum
+
+    def local_stream_flow_limit_updates(self, stream_id: int) -> Iterator[tuple[float, int]]:
+        """time in ms, maximum in bytes"""
+        yield 0, self.local_initial_max_stream_data_bidi_local or 0
+        for frame in self.sent_frames:
             match frame.type:
                 case frame_types.MAX_STREAM_DATA:
                     max_stream_data_frame = MaxStreamDataFrame(frame)
@@ -168,6 +187,27 @@ class Connection:
         return self.remote_parameters.get('initial_max_stream_data_bidi_remote')
 
     @property
+    def local_parameters(self) -> dict | None:
+        for event in self.events:
+            if event.name == event_names.TRANSPORT_PARAMETERS_SET:
+                data = event.data
+                if data is not None:
+                    owner = data.get('owner')
+                    if owner == 'local':
+                        return data
+        return {}
+
+    @property
+    def local_initial_max_data(self) -> Optional[int]:
+        """in bytes"""
+        return self.local_parameters.get('initial_max_data')
+
+    @property
+    def local_initial_max_stream_data_bidi_local(self) -> Optional[int]:
+        """in bytes"""
+        return self.local_parameters.get('initial_max_stream_data_bidi_local')
+
+    @property
     def bytes_in_flight_updates(self) -> Iterator[tuple[float, int]]:
         """time in ms, bytes in flight"""
         for event in self.events_of_type(event_names.RECOVERY_METRICS_UPDATED):
@@ -198,3 +238,8 @@ class Connection:
             if latest_rtt is not None:
                 yield event.time, latest_rtt
 
+    def time_to_first_byte(self, stream_id: int) -> float:
+        """time to first byte in ms"""
+        for frame in self.received_stream_frames_of_stream(stream_id):
+            if frame.length > 0:
+                return frame.time

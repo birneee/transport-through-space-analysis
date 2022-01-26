@@ -14,3 +14,8 @@ find . -name '*.qlog' -exec gzip -k {} \;
 ```bash
 find . -name '*.qlog' -exec rm -rf {} \;
 ```
+
+## Remove Connection ID from File Name
+```bash
+find . -name '*.qlog' -exec perl-rename 's/^(.+)_[0-9a-f]+\.qlog/$1\.qlog/' {} \;
+```

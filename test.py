@@ -8,7 +8,7 @@ import matplotlib
 from matplotlib import pyplot as plt
 from qvis.connection import Connection, read_qlog
 from qvis.plot import QvisByteAxisFormatter, QvisTimeAxisFormatter, plot_connection_flow_limit, plot_stream_data_sent, \
-    plot_stream_flow_limit, plot_congestion_window, plot_bytes_in_flight
+    plot_remote_stream_flow_limit, plot_congestion_window, plot_bytes_in_flight
 
 # %% load
 start = time.time()
@@ -25,7 +25,7 @@ plt.rcParams.update({
 fig, ax = plt.subplots()
 plot_stream_data_sent(ax, conn)
 plot_connection_flow_limit(ax, conn)
-plot_stream_flow_limit(ax, conn)
+plot_remote_stream_flow_limit(ax, conn)
 plot_bytes_in_flight(ax, conn)
 plot_congestion_window(ax, conn)
 ax.margins(0)
