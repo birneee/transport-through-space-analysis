@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-import time
 
 import matplotlib
 from matplotlib import pyplot as plt
 
 from qvis.connection import Connection, read_qlog
-from qvis.plot import QvisByteAxisFormatter, QvisTimeAxisFormatter, plot_rtt
+from qvis.plot import QvisTimeAxisFormatter, plot_rtt
 
 # %% load qlog files
 max_ms = 20000
@@ -30,12 +29,12 @@ ax.set_axisbelow(True)
 ax.grid(True)
 ax.set_xlim(xmin=0)
 ax.set_ylim(ymin=800)
-lgnd = ax.legend(fancybox=False, shadow=False)
+lgnd = ax.legend(fancybox=False, shadow=False, loc='lower right')
 for handle in lgnd.legendHandles:
     handle._sizes = [30]
 ax.xaxis.set_major_formatter(QvisTimeAxisFormatter)
 ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(2))
-ax.yaxis.set_major_formatter(QvisByteAxisFormatter)
+#ax.yaxis.set_major_formatter(QvisByteAxisFormatter)
 ax.xaxis.set_label_text('Time (s)')
 ax.yaxis.set_label_text('RTT (ms)')
 fig.savefig(f'./plots/compare_rtt_1000ms.pdf', bbox_inches='tight', dpi=300)
