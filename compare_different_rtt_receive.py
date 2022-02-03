@@ -52,6 +52,6 @@ ax.yaxis.set_major_formatter(QvisByteAxisFormatter)
 ax.xaxis.set_label_text('Time (s)')
 ax.yaxis.set_label_text('Data (bytes)')
 output_path = f'./plots/{os.path.splitext(os.path.basename(__file__))[0]}.pdf'
-fig.savefig(output_path, bbox_inches='tight', dpi=300)
+fig.savefig(output_path, bbox_inches='tight', dpi=600)
 print(f'saved plot as {output_path}')
 plt.plot()

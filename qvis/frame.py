@@ -1,5 +1,7 @@
 from typing import Optional, Iterator
 
+from qvis.ranges import Ranges
+
 
 class Frame(object):
     inner: dict
@@ -19,21 +21,16 @@ class Frame(object):
         return self.packet.time
 
 
-class AckFrame:
+class AckFrame(Frame):
     base: Frame
 
     def __init__(self, base: Frame):
+        super().__init__(base.inner, base.packet)
         self.base = base
 
     @property
-    def acked_packet_numbers(self) -> Iterator[int]:
-        for acked_range in self.base.inner.get("acked_ranges"):
-            if len(acked_range) == 1:
-                yield acked_range[0]
-            elif len(acked_range) == 2:
-                yield from range(int(acked_range[0]), int(acked_range[1])+1)
-            else:
-                raise Exception("invalid range")
+    def acked_packet_numbers(self) -> Ranges:
+        return Ranges(self.base.inner.get("acked_ranges"))
 
 
 class MaxStreamDataFrame:

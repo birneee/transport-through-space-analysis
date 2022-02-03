@@ -3,11 +3,9 @@ from typing import Optional
 
 class Event:
     inner: dict
-    connection: 'connection.Connection'
 
-    def __init__(self, inner: dict, connection: 'connection.Connection'):
+    def __init__(self, inner: dict):
         self.inner = inner
-        self.connection = connection
 
     @property
     def index(self) -> int:

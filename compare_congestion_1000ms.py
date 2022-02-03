@@ -10,8 +10,8 @@ from qvis.plot import QvisByteAxisFormatter, QvisTimeAxisFormatter, plot_congest
 # %% load qlog files
 max_ms = 20000
 conn: Connection = read_qlog('./data/1000ms/server.qlog.gz', max_ms=max_ms)
-conn_1p: Connection = read_qlog('./data/1000ms_client_side_proxy/server.qlog.gz', max_ms=max_ms)
-conn_2p: Connection = read_qlog('./data/1000ms_two_proxies/server_side_proxy_client_facing.qlog.gz', shift_ms=2000,
+conn_1p: Connection = read_qlog('./data/1000ms_client_side_proxy/1/server.qlog.gz', max_ms=max_ms)
+conn_2p: Connection = read_qlog('./data/1000ms_two_proxies/1/server_side_proxy_client_facing.qlog.gz', shift_ms=2000,
                                 max_ms=max_ms)
 
 # %% plot

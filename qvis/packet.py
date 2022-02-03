@@ -1,8 +1,9 @@
 from __future__ import annotations
 from typing import Iterator, Optional
 
+from . import frame_types
 from .event import Event
-from .frame import Frame
+from .frame import Frame, StreamFrame
 
 
 class Packet:
@@ -39,6 +40,12 @@ class Packet:
         for frame in frames:
             yield Frame(frame, self)
 
+    def frames_of_type(self, frame_type: str) -> Iterator['Frame']:
+        return filter(lambda f: f.type == frame_type, self.frames)
+
     @property
-    def corresponding_ack(self) -> Optional[Packet]:
-        return self.event.connection.received_ack.get(self.packet_number)
+    def stream_frames(self) -> Iterator['StreamFrame']:
+        return map(lambda f: StreamFrame(f), self.frames_of_type(frame_types.STREAM))
+
+    def stream_frames_of_stream(self, stream_id: int) -> Iterator['StreamFrame']:
+        return filter(lambda f: f.stream_id == stream_id, self.stream_frames)
