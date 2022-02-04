@@ -128,6 +128,8 @@ def plot_remote_stream_flow_limit(ax: Axes, conn: Connection, stream_id: int, co
                                   label: str | None = 'Stream flow control limits', linestyle: str = 'solid'):
     start = time.time()
     updates = conn.remote_stream_flow_limit_updates(stream_id)
+    updates = extend_time(conn, updates)
+    updates = increasing_only(updates)
     ms, values = unzip(updates)
     seconds = list(map(lambda m: m / 1000, ms))
     seconds.append(conn.max_time / 1000)
@@ -138,7 +140,10 @@ def plot_remote_stream_flow_limit(ax: Axes, conn: Connection, stream_id: int, co
 def plot_local_stream_flow_limit(ax: Axes, conn: Connection, stream_id: int, color: str = '#ff69b4',
                                  label: str | None = 'Stream flow control limits', linestyle: str = 'solid'):
     start = time.time()
-    ms, limits = zip(*extend_time(conn, conn.local_stream_flow_limit_updates(stream_id)))
+    updates = conn.local_stream_flow_limit_updates(stream_id)
+    updates = extend_time(conn, updates)
+    updates = increasing_only(updates)
+    ms, limits = unzip(updates)
     seconds = list(map(lambda m: m / 1000, ms))
     seconds.append(conn.max_time / 1000)
     ax.stairs(values=limits, edges=seconds, baseline=None, color=color, label=label, linestyle=linestyle)
@@ -148,8 +153,10 @@ def plot_local_stream_flow_limit(ax: Axes, conn: Connection, stream_id: int, col
 def plot_remote_connection_flow_limit(ax: Axes, conn: Connection, color: str = '#a80f3a',
                                       label: str | None = 'Connection flow control limit', linestyle: str = 'solid'):
     start = time.time()
-    limit = extend_time(conn, conn.remote_connection_flow_limit_updates())
-    ms, limits = unzip(limit)
+    updates = conn.remote_connection_flow_limit_updates()
+    updates = extend_time(conn, updates)
+    updates = increasing_only(updates)
+    ms, limits = unzip(updates)
     seconds = list(map(lambda m: m / 1000, ms))
     seconds.append(conn.max_time / 1000)
     ax.stairs(values=limits, edges=seconds, baseline=None, color=color, label=label, linestyle=linestyle)
