@@ -8,7 +8,7 @@ from typing import Iterator, Optional, TextIO
 import ujson as json
 
 from . import event_names, frame_types
-from .event import Event
+from .event import Event, XseRecord
 from .frame import Frame, MaxStreamDataFrame, StreamFrame, AckFrame
 from .packet import Packet
 from .recovery import MetricsUpdated
@@ -87,6 +87,11 @@ class Connection:
     def events_of_type(self, name: str) -> Iterator[Event]:
         return filter(lambda e: e.name == name, self.events)
 
+    def received_xse_records(self, stream_id: int) -> Iterator[XseRecord]:
+        return filter(lambda x: x.stream_id == stream_id,
+                      map(lambda e: XseRecord(e),
+                          self.events_of_type(event_names.TRANSPORT_XSE_RECORD_RECEIVED)))
+
     @property
     def sent_packets(self) -> Iterator[Packet]:
         for raw_event in self.sent_packet_events:
@@ -95,6 +100,11 @@ class Connection:
     @property
     def received_packets(self) -> Iterator[Packet]:
         for raw_event in self.received_packet_events:
+            yield Packet(Event(raw_event))
+
+    @property
+    def received_packets_reversed(self) -> Iterator[Packet]:
+        for raw_event in reversed(self.received_packet_events):
             yield Packet(Event(raw_event))
 
     @property
@@ -119,15 +129,31 @@ class Connection:
             for frame in packet.frames:
                 yield frame
 
+    @property
+    def received_frames_reversed(self) -> Iterator[Frame]:
+        for packet in self.received_packets_reversed:
+            for frame in packet.frames:
+                yield frame
+
     def received_frames_of_type(self, frame_type: str) -> Iterator[Frame]:
         return filter(lambda f: f.type == frame_type, self.received_frames)
+
+    def received_frames_of_type_reversed(self, frame_type: str) -> Iterator[Frame]:
+        return filter(lambda f: f.type == frame_type, self.received_frames_reversed)
 
     @property
     def received_stream_frames(self) -> Iterator[StreamFrame]:
         return map(lambda f: StreamFrame(f), self.received_frames_of_type(frame_types.STREAM))
 
+    @property
+    def received_stream_frames_reversed(self) -> Iterator[StreamFrame]:
+        return map(lambda f: StreamFrame(f), self.received_frames_of_type_reversed(frame_types.STREAM))
+
     def received_stream_frames_of_stream(self, stream_id: int) -> Iterator[StreamFrame]:
         return filter(lambda f: f.stream_id == stream_id, self.received_stream_frames)
+
+    def received_stream_frames_of_stream_reversed(self, stream_id: int) -> Iterator[StreamFrame]:
+        return filter(lambda f: f.stream_id == stream_id, self.received_stream_frames_reversed)
 
     def stream_flow_limit_sum_updates(self) -> Iterator[tuple[float, int]]:
         """sum of all stream flow limits"""
@@ -275,3 +301,22 @@ class Connection:
                     break
                 except StopIteration:
                     continue
+
+    def avg_stream_receive_rate(self, stream_id) -> float:
+        """in bits per second"""
+        """if XSE-QUIC is used, this is the raw decrypted data including the control information"""
+        start_time = self.time_to_first_byte(stream_id) / 1000  # in seconds
+        stop_time = self.max_time / 1000  # in seconds
+        duration = stop_time - start_time
+        latest_stream_frame = next(self.received_stream_frames_of_stream_reversed(stream_id))
+        max_stream_data = (latest_stream_frame.offset + latest_stream_frame.length) * 8  # in bits
+        return max_stream_data / duration
+
+    def avg_xse_stream_receive_rate(self, stream_id) -> float:
+        """in bits per second"""
+        """only the payload of the XSE-QUIC records"""
+        start_time = self.time_to_first_byte(stream_id) / 1000  # in seconds
+        stop_time = self.max_time / 1000  # in seconds
+        duration = stop_time - start_time
+        max_stream_data = sum(map(lambda x: x.data_length, self.received_xse_records(stream_id))) * 8  # in bits
+        return max_stream_data / duration

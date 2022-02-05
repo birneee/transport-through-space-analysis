@@ -14,7 +14,7 @@ class Event:
 
     @property
     def time(self) -> float:
-        """in seconds"""
+        """in ms"""
         return self.inner['time']
 
     @property
@@ -26,3 +26,27 @@ class Event:
     def data(self) -> Optional[dict]:
         """event specific data"""
         return self.inner.get('data')
+
+
+class XseRecord:
+    inner: Event
+
+    def __init__(self, event: Event):
+        self.inner = event
+
+    @property
+    def time(self) -> float:
+        """in ms"""
+        return self.inner.time
+
+    @property
+    def stream_id(self) -> int:
+        return self.inner.data.get('stream_id')
+
+    @property
+    def raw_length(self) -> int:
+        return self.inner.data.get('raw_length')
+
+    @property
+    def data_length(self) -> int:
+        return self.inner.data.get('data_length')

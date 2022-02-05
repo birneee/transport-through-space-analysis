@@ -248,6 +248,17 @@ def plot_stream_data_received(ax: Axes, conn: Connection, stream_id: int, color:
     print(f'plotted in {time.time() - start}s')
 
 
+def plot_xse_data_received(ax: Axes, conn: Connection, stream_id: int, color: str = '#ff00c7',
+                           label: str = 'XSE data received'):
+    start = time.time()
+    ms, lengths = unzip(map(lambda x: (x.time, x.data_length),
+                        conn.received_xse_records(stream_id)))
+    seconds = list(map(lambda m: m / 1000, ms))
+    cum_lengths = np.cumsum(lengths)
+    ax.scatter(x=seconds, y=cum_lengths, s=1.5, rasterized=True, label=label, color=color)
+    print(f'plotted in {time.time() - start}s')
+
+
 def plot_time_to_first_byte(ax: Axes, conn: Connection, stream_id: int, color: str = 'black',
                             label: Optional[str] = 'Time to first byte'):
     ttfb = conn.time_to_first_byte(stream_id)
