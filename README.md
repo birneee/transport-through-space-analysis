@@ -1,3 +1,3 @@
-# Transport through Space: Plots
+# Transport through Space: Analysis
 
 TODO
