@@ -2,18 +2,18 @@ Bandwidth: 100 Mbit/s
 RTT: 1000 ms
 BDP: 12500000 B/s
 Max In-Flight Packets: 9765
-[server] starting server with pid 336510, port 18080, cc cubic, iw 32
-[server_side_proxy] starting proxy with pid 336512, port 18081, cc cubic
+[server] starting server with pid 129342, port 18080, cc cubic, iw 32
+[server_side_proxy] starting proxy with pid 129344, port 18081, cc cubic
 [server_side_proxy][control_session 0] open
-[client_side_proxy] starting proxy with pid 336511, port 18081, cc cubic
+[client_side_proxy] starting proxy with pid 129343, port 18081, cc cubic
 [server][session 0] open
 [server_side_proxy][control_session 0] failed to read handover state: Application error 0x0: cancel
-[client] connection establishment time: 2.004847 s
+[client] connection establishment time: 2.005012 s
 [client_side_proxy][control_session 0] open
 [client_side_proxy][control_session 0] handover state received
 [client_side_proxy][control_session 0] closed
 [client_side_proxy][proxy_session 0] open
-[client] migrated to 10.0.0.102:57810
+[client] migrated to 10.0.0.102:40151
 [server_side_proxy][control_session 1] open
 [server_side_proxy][control_session 1] handover state received
 [server_side_proxy][control_session 1] closed
@@ -21,48 +21,48 @@ Max In-Flight Packets: 9765
 [client_side_proxy][proxy_session 0][stream 0] open
 [server_side_proxy][proxy_session 0][stream 0] open
 [server][session 0][stream 0] open
-[server][session 0] migrated to 10.0.0.2:45347
-[client] time to first byte: 5.014730 s
-[client] second 1.000332: 91042395.469364 bit/s, bytes received: 11384070 B, packets received: 9310
-[client] second 2.000423: 94808402.074347 bit/s, bytes received: 11852124 B, packets received: 9666
-[client] second 3.000499: 94823029.312425 bit/s, bytes received: 11853781 B, packets received: 9665
-[client] second 4.000622: 94820202.677786 bit/s, bytes received: 11853987 B, packets received: 9665
-[client] second 5.001126: 15503231.503225 bit/s, bytes received: 1938881 B, packets received: 1581
-[client] second 6.001745: 71943781.503890 bit/s, bytes received: 8998542 B, packets received: 7336
-[client] second 7.001789: 74401692.454581 bit/s, bytes received: 9300615 B, packets received: 7584
-[client] second 8.001818: 94829144.342719 bit/s, bytes received: 11853987 B, packets received: 9663
-[client] second 9.001918: 94812628.697921 bit/s, bytes received: 11852760 B, packets received: 9666
-[client] second 10.002278: 38939981.853144 bit/s, bytes received: 4869253 B, packets received: 3969
-[client] second 11.002334: 50908153.485438 bit/s, bytes received: 6363877 B, packets received: 5186
-[client] second 12.003333: 46726368.859480 bit/s, bytes received: 5846625 B, packets received: 4766
-[client] second 13.003430: 114639107.836697 bit/s, bytes received: 14331290 B, packets received: 10288
-[client] second 14.003470: 68689283.233513 bit/s, bytes received: 8586501 B, packets received: 6999
-[client] second 15.003671: 68688062.782297 bit/s, bytes received: 8587733 B, packets received: 7001
-[client] second 16.003727: 68697979.248893 bit/s, bytes received: 8587728 B, packets received: 7001
-[client] second 17.003916: 68718274.556832 bit/s, bytes received: 8591409 B, packets received: 7006
-[client] second 18.004008: 68734789.827560 bit/s, bytes received: 8592641 B, packets received: 7006
-[client] second 19.004052: 68738070.879855 bit/s, bytes received: 8592636 B, packets received: 7004
-[client] second 20.004079: 68709796.252226 bit/s, bytes received: 8588960 B, packets received: 7006
-[client] second 21.004180: 68763586.064356 bit/s, bytes received: 8596317 B, packets received: 7006
-[client] second 22.004366: 68767574.847058 bit/s, bytes received: 8597544 B, packets received: 7011
-[client] second 23.004662: 68779663.500112 bit/s, bytes received: 8600003 B, packets received: 7009
-[client] second 24.005049: 68793020.618229 bit/s, bytes received: 8602452 B, packets received: 7014
-[client] second 25.005253: 68795854.009267 bit/s, bytes received: 8601230 B, packets received: 7014
-[client] second 26.005555: 68808612.784456 bit/s, bytes received: 8603679 B, packets received: 7013
-[client] second 27.005754: 68815693.772527 bit/s, bytes received: 8603679 B, packets received: 7018
-[client] second 28.006133: 68832858.571920 bit/s, bytes received: 8607365 B, packets received: 7016
-[client] second 29.006280: 68829138.720250 bit/s, bytes received: 8604906 B, packets received: 7016
-[client] second 30.006453: 68846977.872065 bit/s, bytes received: 8607365 B, packets received: 7018
-[client] second 31.006761: 68857300.783923 bit/s, bytes received: 8609814 B, packets received: 7020
-[client] second 32.007064: 68867463.155820 bit/s, bytes received: 8611041 B, packets received: 7019
-[client] second 33.007259: 68874941.450039 bit/s, bytes received: 8611046 B, packets received: 7019
-[client] second 34.007286: 68906092.782698 bit/s, bytes received: 8613495 B, packets received: 7023
-[client] second 35.007374: 68892161.102816 bit/s, bytes received: 8612273 B, packets received: 7021
-[client] second 36.007437: 68893766.972303 bit/s, bytes received: 8612268 B, packets received: 7021
-[client] second 37.007611: 68915605.715445 bit/s, bytes received: 8615949 B, packets received: 7025
-[client] second 38.007648: 68925060.957376 bit/s, bytes received: 8615954 B, packets received: 7023
-[client] second 39.007849: 68933443.308548 bit/s, bytes received: 8618403 B, packets received: 7026
-[client] second 40.008003: 68916919.388030 bit/s, bytes received: 8615949 B, packets received: 7023
-[client] total: bytes received: 354590586 B, packets received: 287725
+[server][session 0] migrated to 10.0.0.2:52625
+[client] time to first byte: 5.014910 s
+[client] second 1.000196: 91052403.870721 bit/s, bytes received: 11383770 B, packets received: 9307
+[client] second 2.000245: 94815200.004789 bit/s, bytes received: 11852482 B, packets received: 9667
+[client] second 3.000328: 94823987.584611 bit/s, bytes received: 11853987 B, packets received: 9660
+[client] second 4.000419: 94833033.260128 bit/s, bytes received: 11855214 B, packets received: 9664
+[client] second 5.000849: 15490074.092141 bit/s, bytes received: 1937090 B, packets received: 1580
+[client] second 6.000900: 74452851.939528 bit/s, bytes received: 9307083 B, packets received: 7589
+[client] second 7.000985: 76273261.882069 bit/s, bytes received: 9534972 B, packets received: 7773
+[client] second 8.001011: 94829483.253458 bit/s, bytes received: 11853987 B, packets received: 9662
+[client] second 9.001080: 94815541.141021 bit/s, bytes received: 11852760 B, packets received: 9660
+[client] second 10.001366: 35911214.536147 bit/s, bytes received: 4490184 B, packets received: 3661
+[client] second 11.001404: 54059245.796956 bit/s, bytes received: 6757670 B, packets received: 5508
+[client] second 12.001438: 94818885.741377 bit/s, bytes received: 11852760 B, packets received: 9662
+[client] second 13.001519: 94824223.013522 bit/s, bytes received: 11853987 B, packets received: 9664
+[client] second 14.001746: 56271893.431417 bit/s, bytes received: 7035583 B, packets received: 5734
+[client] second 15.002517: 19822774.207086 bit/s, bytes received: 2479757 B, packets received: 2021
+[client] second 16.002631: 36059679.687258 bit/s, bytes received: 4507973 B, packets received: 3676
+[client] second 17.002659: 94829237.936461 bit/s, bytes received: 11853987 B, packets received: 9664
+[client] second 18.002755: 94812918.417319 bit/s, bytes received: 11852760 B, packets received: 9663
+[client] second 19.003438: 54407030.200774 bit/s, bytes received: 6805523 B, packets received: 5548
+[client] second 20.003500: 37980509.757692 bit/s, bytes received: 4747854 B, packets received: 3872
+[client] second 21.003540: 94818194.824467 bit/s, bytes received: 11852760 B, packets received: 9665
+[client] second 22.003613: 94825026.495781 bit/s, bytes received: 11853987 B, packets received: 9661
+[client] second 23.004530: 72296862.664973 bit/s, bytes received: 9045399 B, packets received: 7374
+[client] second 24.004671: 20051144.919102 bit/s, bytes received: 2506746 B, packets received: 2045
+[client] second 25.004767: 90572907.657063 bit/s, bytes received: 11322701 B, packets received: 9229
+[client] second 26.004790: 94819961.627237 bit/s, bytes received: 11852760 B, packets received: 9665
+[client] second 27.004878: 94823531.142200 bit/s, bytes received: 11853987 B, packets received: 9661
+[client] second 28.005574: 90258646.705072 bit/s, bytes received: 11290188 B, packets received: 9204
+[client] second 29.005622: 2080628.131930 bit/s, bytes received: 260091 B, packets received: 212
+[client] second 30.005701: 86751234.441204 bit/s, bytes received: 10844759 B, packets received: 8839
+[client] second 31.005735: 94809314.863058 bit/s, bytes received: 11851562 B, packets received: 9664
+[client] second 32.005850: 94821193.624018 bit/s, bytes received: 11854014 B, packets received: 9662
+[client] second 33.005925: 94824718.432588 bit/s, bytes received: 11853987 B, packets received: 9663
+[client] second 34.006768: 13451246.764628 bit/s, bytes received: 1682823 B, packets received: 1372
+[client] second 35.006826: 78910814.707065 bit/s, bytes received: 9864419 B, packets received: 8040
+[client] second 36.006892: 94815754.177329 bit/s, bytes received: 11852760 B, packets received: 9665
+[client] second 37.006923: 94828960.190221 bit/s, bytes received: 11853987 B, packets received: 9663
+[client] second 38.007277: 31419558.964833 bit/s, bytes received: 3928834 B, packets received: 3202
+[client] second 39.007361: 60971580.022110 bit/s, bytes received: 7622089 B, packets received: 6214
+[client] second 40.007394: 94818926.796589 bit/s, bytes received: 11852760 B, packets received: 9665
+[client] total: bytes received: 362571223 B, packets received: 295600
 [client_side_proxy][proxy_session 0] close
 [client_side_proxy][proxy_session 0][stream 0] close
