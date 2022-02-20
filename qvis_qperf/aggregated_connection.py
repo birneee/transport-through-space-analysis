@@ -1,3 +1,4 @@
+import statistics
 from typing import List, Iterator
 
 from qvis_qperf.aggregated_report import AggregatedReport
@@ -9,6 +10,16 @@ class AggregatedConnection:
 
     def __init__(self, connections: List[Connection]):
         self.connections = connections
+
+    @property
+    def time_to_first_byte(self) -> float:
+        """in seconds"""
+        return statistics.mean(map(lambda c: c.time_to_first_byte, self.connections))
+
+    @property
+    def mean_rate(self) -> float:
+        """in bit per second"""
+        return statistics.mean(map(lambda c: c.mean_rate, self.connections))
 
     @property
     def reports(self) -> Iterator[AggregatedReport]:

@@ -1,3 +1,4 @@
+import statistics
 from typing import List
 
 import numpy as np
@@ -12,15 +13,11 @@ class AggregatedReport:
         self.reports = reports
 
     @property
-    def time(self) -> int:
-        """in full seconds"""
-        time = round(self.reports[0].time)
-        for report in self.reports:
-            if round(report.time) != time:
-                raise "report time does not match"
-        return time
+    def time(self) -> float:
+        """in seconds"""
+        return statistics.mean(map(lambda r: r.time, self.reports))
 
     @property
     def avg_download_rate(self) -> float:
         """in bits per second"""
-        return np.mean(list(map(lambda r: r.download_rate, self.reports)))
+        return statistics.mean(map(lambda r: r.download_rate, self.reports))

@@ -1,0 +1,63 @@
+Bandwidth: 100 Mbit/s
+RTT: 500 ms
+BDP: 6250000 B/s
+Max In-Flight Packets: 4882
+[client_side_proxy] starting proxy with pid 442777, port 18081, cc cubic
+[server] starting server with pid 442785, port 18080, cc cubic, iw 32
+[server][session 0] open
+[client] connection establishment time: 1.006128 s
+[client_side_proxy][control_session 0] open
+[client_side_proxy][control_session 0] handover state received
+[client_side_proxy][control_session 0] closed
+[client_side_proxy][proxy_session 0] open
+[client] migrated to 10.0.0.102:52066
+[client_side_proxy][proxy_session 0][stream 0] open
+[server][session 0][stream 0] open
+[client] time to first byte: 2.015005 s
+[server][session 0] migrated to 10.0.0.102:59529
+[client] second 1.000893: 827845.119256 bit/s, bytes received: 103573 B, packets received: 101
+[client] second 2.000945: 3125932.476220 bit/s, bytes received: 390762 B, packets received: 322
+[client] second 3.001869: 8498548.182835 bit/s, bytes received: 1063300 B, packets received: 880
+[client] second 4.002316: 21083934.965867 bit/s, bytes received: 2636669 B, packets received: 2175
+[client] second 5.002372: 56105462.882929 bit/s, bytes received: 7013579 B, packets received: 5782
+[client] second 6.002956: 61296118.679736 bit/s, bytes received: 7666485 B, packets received: 6317
+[client] second 7.003925: 47355948.095775 bit/s, bytes received: 5925234 B, packets received: 4882
+[client_side_proxy][proxy_session 0][stream 0] INTERNAL_ERROR: too many gaps in received data
+[client_side_proxy][proxy_session 0][stream 0] close
+[client_side_proxy][proxy_session 0] INTERNAL_ERROR: too many gaps in received data
+[client_side_proxy][proxy_session 0] close
+[client] second 8.004400: 0.000000 bit/s, bytes received: 0 B, packets received: 1
+[client] second 9.004460: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 10.004500: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 11.004567: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 12.004615: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 13.004691: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 14.004733: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 15.004782: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 16.004891: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 17.004932: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 18.004973: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 19.005013: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 20.005054: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 21.005097: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 22.005138: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 23.005186: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 24.005231: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 25.005273: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 26.005314: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 27.005355: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 28.005396: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 29.005436: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 30.005476: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 31.005518: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 32.005564: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 33.005613: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 34.005654: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 35.005696: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 36.005737: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 37.005803: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[server][session 0] close with error: timeout: no recent network activity
+[client] second 38.005856: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 39.005899: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] second 40.006937: 0.000000 bit/s, bytes received: 0 B, packets received: 0
+[client] total: bytes received: 24799602 B, packets received: 20460
