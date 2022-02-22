@@ -16,6 +16,11 @@ class AggregatedConnection:
         """in seconds"""
         return statistics.mean(map(lambda c: c.time_to_first_byte, self.connections))
 
+    def total_bytes_at(self, time: float) -> float:
+        """time: in seconds"""
+        """in bytes"""
+        return statistics.mean(map(lambda c: c.total_bytes_at(time), self.connections))
+
     @property
     def mean_rate(self) -> float:
         """in bit per second"""

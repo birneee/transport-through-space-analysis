@@ -15,6 +15,7 @@ conns_72 = load_all_connections('./data/72ms/qperf')
 conns_220 = load_all_connections('./data/220ms/qperf')
 conns_500 = load_all_connections('./data/500ms/qperf')
 conns_1000 = load_all_connections('./data/1000ms/qperf')
+conns_2000 = load_all_connections('./data/2000ms/qperf')
 
 # %% load qlog files
 
@@ -22,6 +23,7 @@ agg_conn_72 = AggregatedConnection(conns_72)
 agg_conn_220 = AggregatedConnection(conns_220)
 agg_conn_500 = AggregatedConnection(conns_500)
 agg_conn_1000 = AggregatedConnection(conns_1000)
+agg_conn_2000 = AggregatedConnection(conns_2000)
 
 
 # %% plot
@@ -36,23 +38,26 @@ plot_rate(ax, agg_conn_72, label=r'$72\,$ms', color='tab:blue', marker='x')
 plot_rate(ax, agg_conn_220, label=r'$220\,$ms', color='tab:orange', marker='x')
 plot_rate(ax, agg_conn_500, label=r'$500\,$ms', color='tab:green', marker='x')
 plot_rate(ax, agg_conn_1000, label=r'$1000\,$ms', color='tab:red', marker='x')
+plot_rate(ax, agg_conn_2000, label=r'$2000\,$ms', color='tab:cyan', marker='x')
 
-plot_rate(ax, conns_72, label='Individual Rates', color='tab:blue', alpha=0.1, linestyle='dotted')
-plot_rate(ax, conns_220, label=None, color='tab:orange', alpha=0.1, linestyle='dotted')
-plot_rate(ax, conns_500, label=None, color='tab:green', alpha=0.1, linestyle='dotted')
-plot_rate(ax, conns_1000, label=None, color='tab:red', alpha=0.05, linestyle='dotted')
+# plot_rate(ax, conns_72, label='Individual rates', color='tab:blue', alpha=0.1)
+# plot_rate(ax, conns_220, label=None, color='tab:orange', alpha=0.1)
+# plot_rate(ax, conns_500, label=None, color='tab:green', alpha=0.05)
+# plot_rate(ax, conns_1000, label=None, color='tab:red', alpha=0.03)
+# plot_rate(ax, conns_2000, label=None, color='tab:cyan', alpha=0.03)
 
 plot_time_to_first_byte(ax, agg_conn_72, color='tab:blue')
 plot_time_to_first_byte(ax, agg_conn_220, label=None, color='tab:orange')
 plot_time_to_first_byte(ax, agg_conn_500, label=None, color='tab:green')
 plot_time_to_first_byte(ax, agg_conn_1000, label=None, color='tab:red')
+plot_time_to_first_byte(ax, agg_conn_2000, label=None, color='tab:cyan')
 
-fig.set_size_inches(8, 6)
+fig.set_size_inches(7, 4)
 ax.set_axisbelow(True)
 ax.grid(True)
 ax.set_ylim(ymin=0)
 ax.set_xlim(xmin=0, xmax=40)
-lgnd = ax.legend(fancybox=False, shadow=False, loc='lower right')
+lgnd = ax.legend(fancybox=False, shadow=False, loc='lower center',  bbox_to_anchor=(0.5, -0.3), ncol=3, frameon=False)
 for handle in lgnd.legendHandles:
     handle._sizes = [30]
     handle._alpha = 1
