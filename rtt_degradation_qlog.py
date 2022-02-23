@@ -39,7 +39,7 @@ fig.set_size_inches(8, 6)
 ax.set_axisbelow(True)
 ax.grid(True)
 ax.set_ylim(ymin=0)
-ax.set_xlim(xmin=0)
+ax.set_xlim(xmin=0, xmax=40)
 lgnd = ax.legend(fancybox=False, shadow=False)
 for handle in lgnd.legendHandles:
     handle._sizes = [30]

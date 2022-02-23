@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from qvis.plot import QvisByteAxisFormatter, QvisTimeAxisFormatter
 
 from qvis_qperf.aggregated_connection import AggregatedConnection
-from qvis_qperf.connection import load_all_connections
+from qvis_qperf.connection import load_all_connections, reduce_steps
 from qvis_qperf.plot import plot_rate, plot_time_to_first_byte
 
 # %% load connections
@@ -19,11 +19,11 @@ conns_2000 = load_all_connections('./data/2000ms/qperf')
 
 # %% load qlog files
 
-agg_conn_72 = AggregatedConnection(conns_72)
-agg_conn_220 = AggregatedConnection(conns_220)
-agg_conn_500 = AggregatedConnection(conns_500)
-agg_conn_1000 = AggregatedConnection(conns_1000)
-agg_conn_2000 = AggregatedConnection(conns_2000)
+agg_conn_72 = AggregatedConnection(reduce_steps(conns_72))
+agg_conn_220 = AggregatedConnection(reduce_steps(conns_220))
+agg_conn_500 = AggregatedConnection(reduce_steps(conns_500))
+agg_conn_1000 = AggregatedConnection(reduce_steps(conns_1000))
+agg_conn_2000 = AggregatedConnection(reduce_steps(conns_2000))
 
 
 # %% plot
@@ -33,18 +33,13 @@ plt.rcParams.update({
     "pgf.rcfonts": False,
 })
 fig, ax = plt.subplots()
+ax.axline((0, 100_000_000), (1, 100_000_000), color='gray', linestyle=(0, (1, 10)))
 
 plot_rate(ax, agg_conn_72, label=r'$72\,$ms', color='tab:blue', marker='x')
 plot_rate(ax, agg_conn_220, label=r'$220\,$ms', color='tab:orange', marker='x')
 plot_rate(ax, agg_conn_500, label=r'$500\,$ms', color='tab:green', marker='x')
 plot_rate(ax, agg_conn_1000, label=r'$1000\,$ms', color='tab:red', marker='x')
 plot_rate(ax, agg_conn_2000, label=r'$2000\,$ms', color='tab:cyan', marker='x')
-
-# plot_rate(ax, conns_72, label='Individual rates', color='tab:blue', alpha=0.1)
-# plot_rate(ax, conns_220, label=None, color='tab:orange', alpha=0.1)
-# plot_rate(ax, conns_500, label=None, color='tab:green', alpha=0.05)
-# plot_rate(ax, conns_1000, label=None, color='tab:red', alpha=0.03)
-# plot_rate(ax, conns_2000, label=None, color='tab:cyan', alpha=0.03)
 
 plot_time_to_first_byte(ax, agg_conn_72, color='tab:blue')
 plot_time_to_first_byte(ax, agg_conn_220, label=None, color='tab:orange')
@@ -55,7 +50,7 @@ plot_time_to_first_byte(ax, agg_conn_2000, label=None, color='tab:cyan')
 fig.set_size_inches(7, 4)
 ax.set_axisbelow(True)
 ax.grid(True)
-ax.set_ylim(ymin=0)
+ax.set_ylim(ymin=0, ymax=120000000)
 ax.set_xlim(xmin=0, xmax=40)
 lgnd = ax.legend(fancybox=False, shadow=False, loc='lower center',  bbox_to_anchor=(0.5, -0.3), ncol=3, frameon=False)
 for handle in lgnd.legendHandles:

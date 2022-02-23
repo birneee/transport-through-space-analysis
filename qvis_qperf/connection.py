@@ -3,11 +3,13 @@ import re
 import statistics
 from typing import List
 
+from qvis_qperf.aggregated_report import AggregatedReport
 from qvis_qperf.report import Report
 
 CLIENT_REPORT_REGEX = r'^[^\d\.]+(?P<time>\d+\.?\d*)[^\d\.]+(?P<rate>\d+\.?\d*)[^\d\.]+(?P<bytes>\d+)[^\d\.]+(?P<packets>\d+)$'
 
 TIME_TO_FIRST_BYTE_REGEX = r'^[^\d\.]+time to first byte[^\d\.]+(?P<time>\d+\.?\d*)[^\d\.]+s$'
+
 
 class Connection:
     time_to_first_byte: float
@@ -41,6 +43,21 @@ class Connection:
         """in bit per second"""
         return statistics.mean(map(lambda r: r.download_rate, self.reports))
 
+    @property
+    def max_time(self) -> float:
+        """in seconds"""
+        return self.reports[-1].time
+
+    def reports_in_interval(self, start: float, end: float) -> List[Report]:
+        reports = []
+        for report in self.reports:
+            if report.time >= end:
+                break
+            if start > report.time:
+                continue
+            reports.append(report)
+        return reports
+
     def total_bytes_at(self, time: float) -> float:
         """time: in seconds"""
         """in bytes"""
@@ -57,5 +74,19 @@ def load_all_connections(dir: str, file_extension: str = '.log', max_s: float = 
     for file in os.listdir(dir):
         fe = os.path.splitext(file)[1]
         if fe == file_extension:
-            connections.append(Connection(os.path.join(dir, file), max_s))
+            connections.append(Connection(os.path.join(dir, file), max_s=max_s))
     return connections
+
+
+def reduce_steps(connection: Connection | List[Connection], n=10, keep_zero=True) -> Connection | List[Connection]:
+    if isinstance(connection, List):
+        connections = connection
+        return list(map(lambda c: reduce_steps(c, n, keep_zero), connections))
+    new_connection = Connection.__new__(Connection)
+    new_connection.time_to_first_byte = connection.time_to_first_byte
+    new_connection.reports = []
+    if keep_zero:
+        new_connection.reports.append(connection.reports[0])
+    for i in range(1, len(connection.reports), n):
+        new_connection.reports.append(AggregatedReport(connection.reports[i:i+n]).to_report(use_max_time=True))
+    return new_connection

@@ -217,7 +217,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 RAW=1 delay.sh | tee $i.log;
+      RTT=72 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
     done
   fi
 )
@@ -228,7 +228,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 RAW=1 delay.sh | tee $i.log;
+      RTT=220 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
     done
   fi
 )
@@ -239,7 +239,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 RAW=1 delay.sh | tee $i.log;
+      RTT=500 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
     done
   fi
 )
@@ -250,99 +250,18 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 RAW=1 delay.sh | tee $i.log;
-    done
-  fi
-)
-
-# QPERF two proxies
-
-(
-  DIR=$OUTPUT_DIR/72ms_two_proxies/qperf
-  if [ ! -d "$DIR" ]; then
-    mkdir -p "$DIR"
-    cd "$DIR";
-    for i in {1..100}; do
-      RTT=72 RAW=1 delay_two_proxies.sh | tee $i.log;
+      RTT=1000 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
     done
   fi
 )
 
 (
-  DIR=$OUTPUT_DIR/220ms_two_proxies/qperf
+  DIR=$OUTPUT_DIR/2000ms/qperf
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 RAW=1 delay_two_proxies.sh | tee $i.log;
-    done
-  fi
-)
-
-(
-  DIR=$OUTPUT_DIR/500ms_two_proxies/qperf
-  if [ ! -d "$DIR" ]; then
-    mkdir -p "$DIR"
-    cd "$DIR";
-    for i in {1..100}; do
-      RTT=500 RAW=1 delay_two_proxies.sh | tee $i.log;
-    done
-  fi
-)
-
-(
-  DIR=$OUTPUT_DIR/1000ms_two_proxies/qperf
-  if [ ! -d "$DIR" ]; then
-    mkdir -p "$DIR"
-    cd "$DIR";
-    for i in {1..100}; do
-      RTT=1000 RAW=1 delay_two_proxies.sh | tee $i.log;
-    done
-  fi
-)
-
-# QPERF two proxies simple optimizations
-
-(
-  DIR=$OUTPUT_DIR/72ms_two_proxies_simple/qperf
-  if [ ! -d "$DIR" ]; then
-    mkdir -p "$DIR"
-    cd "$DIR";
-    for i in {1..100}; do
-      RTT=72 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
-    done
-  fi
-)
-
-(
-  DIR=$OUTPUT_DIR/220ms_two_proxies_simple/qperf
-  if [ ! -d "$DIR" ]; then
-    mkdir -p "$DIR"
-    cd "$DIR";
-    for i in {1..100}; do
-      RTT=220 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
-    done
-  fi
-)
-
-(
-  DIR=$OUTPUT_DIR/500ms_two_proxies_simple/qperf
-  if [ ! -d "$DIR" ]; then
-    mkdir -p "$DIR"
-    cd "$DIR";
-    for i in {1..100}; do
-      RTT=500 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
-    done
-  fi
-)
-
-(
-  DIR=$OUTPUT_DIR/1000ms_two_proxies_simple/qperf
-  if [ ! -d "$DIR" ]; then
-    mkdir -p "$DIR"
-    cd "$DIR";
-    for i in {1..100}; do
-      RTT=1000 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=2000 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
     done
   fi
 )
@@ -355,7 +274,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 RAW=1 delay_proxy.sh | tee $i.log;
+      RTT=72 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
     done
   fi
 )
@@ -366,7 +285,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 RAW=1 delay_proxy.sh | tee $i.log;
+      RTT=220 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
     done
   fi
 )
@@ -377,7 +296,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 RAW=1 delay_proxy.sh | tee $i.log;
+      RTT=500 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
     done
   fi
 )
@@ -388,7 +307,132 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 RAW=1 delay_proxy.sh | tee $i.log;
+      RTT=1000 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/2000ms_client_side_proxy/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=2000 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
+    done
+  fi
+)
+
+# QPERF two proxies
+
+(
+  DIR=$OUTPUT_DIR/72ms_two_proxies/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=72 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/220ms_two_proxies/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=220 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/500ms_two_proxies/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=500 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/1000ms_two_proxies/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=1000 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/2000ms_two_proxies/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=2000 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+    done
+  fi
+)
+
+# QPERF two proxies simple optimizations
+
+(
+  DIR=$OUTPUT_DIR/72ms_two_proxies_simple/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=72 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/220ms_two_proxies_simple/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=220 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/500ms_two_proxies_simple/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=500 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/1000ms_two_proxies_simple/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=1000 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+    done
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/2000ms_two_proxies_simple/qperf
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    for i in {1..100}; do
+      RTT=2000 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
     done
   fi
 )
@@ -401,7 +445,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 XSE=1 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=72 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
     done
   fi
 )
@@ -412,7 +456,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 XSE=1 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=220 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
     done
   fi
 )
@@ -423,7 +467,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 XSE=1 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=500 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
     done
   fi
 )
@@ -434,7 +478,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 XSE=1 RAW=1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=1000 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
     done
   fi
 )
