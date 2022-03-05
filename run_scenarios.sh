@@ -117,6 +117,17 @@ function zip_qlog() {
   fi
 )
 
+(
+  DIR=$OUTPUT_DIR/2000ms_client_side_proxy/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=2000 QLOG=1 delay_proxy.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
 # QLOG two proxies
 
 (
@@ -163,6 +174,17 @@ function zip_qlog() {
   fi
 )
 
+(
+  DIR=$OUTPUT_DIR/2000ms_two_proxies/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=2000 QLOG=1 delay_two_proxies.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
 # QLOG two proxies simple optimizations
 
 (
@@ -204,6 +226,74 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     RTT=1000 QLOG=1 delay_two_proxies_simple.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/2000ms_two_proxies_simple/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=2000 QLOG=1 delay_two_proxies_simple.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
+# QLOG two proxies simple optimizations with XSE
+
+(
+  DIR=$OUTPUT_DIR/72ms_two_proxies_simple_xse/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=72 XSE=1 QLOG=1 delay_two_proxies_simple.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/220ms_two_proxies_simple_xse/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=220 XSE=1 QLOG=1 delay_two_proxies_simple.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/500ms_two_proxies_simple_xse/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=500 XSE=1 QLOG=1 delay_two_proxies_simple.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/1000ms_two_proxies_simple_xse/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=1000 XSE=1 QLOG=1 delay_two_proxies_simple.sh
+    rename_qlog
+    zip_qlog
+  fi
+)
+
+(
+  DIR=$OUTPUT_DIR/2000ms_two_proxies_simple_xse/qlog
+  if [ ! -d "$DIR" ]; then
+    mkdir -p "$DIR"
+    cd "$DIR";
+    RTT=2000 XSE=1 QLOG=1 delay_two_proxies_simple.sh
     rename_qlog
     zip_qlog
   fi
