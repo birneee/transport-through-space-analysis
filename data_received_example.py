@@ -49,7 +49,8 @@ def plot(rtt_ms: int, client_side_proxy_handover_ms: int, output_path: str, max_
     ax.grid(True)
     ax.set_ylim(ymin=0, ymax=ymax)
     ax.set_xlim(xmin=xmin, xmax=max_ms/1000)
-    lgnd = ax.legend(fancybox=False, shadow=False)
+    lgnd = ax.legend(fancybox=False, shadow=False, loc='lower center', bbox_to_anchor=(0.47, -0.22), ncol=3,
+                     frameon=False)
     for handle in lgnd.legendHandles:
         handle._sizes = [30]
     ax.xaxis.set_major_formatter(QvisTimeAxisFormatter)

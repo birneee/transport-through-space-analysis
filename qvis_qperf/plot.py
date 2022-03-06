@@ -1,6 +1,8 @@
 import time
 from typing import List, Optional
 
+import numpy as np
+
 from .aggregated_connection import AggregatedConnection
 from matplotlib.axes import Axes
 import matplotlib.transforms as transforms
@@ -46,3 +48,21 @@ def plot_time_to_first_byte(ax: Axes, connection: Connection | AggregatedConnect
         raise "unsupported type"
     ax.scatter(ttfb, 0, marker='^', color=color, label=label, clip_on=False, zorder=100, linewidth=1, s=12,
                transform=transforms.offset_copy(ax.transData, fig=ax.figure, x=0, y=-2.5, units='points'))
+
+
+def plot_data_received(ax: Axes, connection: Connection | AggregatedConnection, color: Optional[str] = None,
+                       label: Optional[str] = None, rasterized: bool = False, marker: Optional[str] = None,
+                       linewidth: float = 1, markersize: float = 5, linestyle: Optional[str] = 'solid'):
+    start = time.time()
+    if isinstance(connection, Connection):
+        seconds: List[int] = list(map(lambda r: r.time, connection.reports))
+        bytes_received: List[float] = list(map(lambda r: r.bytes_received, connection.reports))
+        bytes_received = np.cumsum(bytes_received)
+        ax.plot(seconds, bytes_received, rasterized=rasterized, label=label, color=color, marker=marker,
+                linewidth=linewidth, markersize=markersize, linestyle=linestyle)
+    elif isinstance(connection, AggregatedConnection):
+        plot_data_received(ax, connection.to_connection(), rasterized=rasterized, label=label, color=color,
+                           marker=marker, linewidth=linewidth, markersize=markersize, linestyle=linestyle)
+    else:
+        raise "unsupported type"
+    print(f'plotted in {time.time() - start}s')

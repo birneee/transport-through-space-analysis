@@ -40,7 +40,7 @@ ax.set_axisbelow(True)
 ax.grid(True)
 ax.set_ylim(ymin=0)
 ax.set_xlim(xmin=0, xmax=40)
-lgnd = ax.legend(fancybox=False, shadow=False)
+lgnd = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), ncol=3, frameon=False)
 for handle in lgnd.legendHandles:
     handle._sizes = [30]
 ax.xaxis.set_major_formatter(QvisTimeAxisFormatter)

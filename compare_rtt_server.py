@@ -27,17 +27,17 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
         "pgf.rcfonts": False,
     })
     fig, ax = plt.subplots()
-    plot_rtt(ax, conn, label='No PEP', color='#253c4b', rtt_ms_step_size=min(5, rtt_ms/100))
-    plot_rtt(ax, conn_1p, label='Client-side PEP', color='#00885c', rtt_ms_step_size=min(5, rtt_ms/100))
-    plot_rtt(ax, conn_2p_simple, label='Distributed PEP', color='#ffa600', rtt_ms_step_size=min(5, rtt_ms/100))
-    plot_rtt(ax, conn_2p, label='Distributed PEP (static CC)', color='tab:orange', rtt_ms_step_size=min(5, rtt_ms/100))
+    plot_rtt(ax, conn, label='No PEP', color='#253c4b', rtt_ms_step_size=min(5, rtt_ms/100), linewidth=1.5)
+    plot_rtt(ax, conn_1p, label='Client-side PEP', color='#00885c', rtt_ms_step_size=min(5, rtt_ms/100), linewidth=1.5)
+    plot_rtt(ax, conn_2p_simple, label='Distributed PEP', color='#ffa600', rtt_ms_step_size=min(5, rtt_ms/100), linewidth=1.5)
+    plot_rtt(ax, conn_2p, label='Distributed PEP (static CC)', color='tab:orange', rtt_ms_step_size=min(5, rtt_ms/100), linewidth=1.5)
     ax.margins(x=0)
     fig.set_size_inches(8, 3)
     ax.set_axisbelow(True)
     ax.grid(True)
     ax.set_xlim(xmin=xmin, xmax=max_ms / 1000)
     ax.set_ylim(ymin=rtt_ms * 0.95, ymax=ymax)
-    lgnd = ax.legend(fancybox=False, shadow=False, loc='upper right')
+    lgnd = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.2), ncol=2, frameon=False)
     for handle in lgnd.legendHandles:
         handle._sizes = [30]
     ax.xaxis.set_major_formatter(QvisTimeAxisFormatter)
@@ -49,8 +49,8 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
     plt.plot()
 
 
-# plot(72, 144, './plots/compare_rtt_72ms_server.pdf')
-# plot(220, 440, './plots/compare_rtt_220ms_server.pdf')
-# plot(500, 1000, './plots/compare_rtt_500ms_server.pdf')
+plot(72, 144, './plots/compare_rtt_72ms_server.pdf')
+plot(220, 440, './plots/compare_rtt_220ms_server.pdf')
+plot(500, 1000, './plots/compare_rtt_500ms_server.pdf')
 plot(1000, 2000, './plots/compare_rtt_1000ms_server.pdf')
 plot(2000, 4000, './plots/compare_rtt_2000ms_server.pdf')

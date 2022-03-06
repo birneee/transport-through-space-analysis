@@ -29,16 +29,22 @@ class AggregatedReport:
 
     @property
     def sum_bytes_received(self) -> int:
-        """in bits per second"""
         return sum(map(lambda r: r.bytes_received, self.reports))
 
     @property
+    def avg_bytes_received(self) -> float:
+        return statistics.mean(map(lambda r: r.bytes_received, self.reports))
+
+    @property
     def sum_packets_received(self) -> int:
-        """in bits per second"""
         return sum(map(lambda r: r.packets_received, self.reports))
+
+    @property
+    def avg_packets_received(self) -> float:
+        return statistics.mean(map(lambda r: r.packets_received, self.reports))
 
     def to_report(self, use_max_time: bool = False) -> Report:
         if use_max_time:
-            return Report(self.max_time, self.avg_download_rate, self.sum_bytes_received, self.sum_packets_received)
+            return Report(self.max_time, self.avg_download_rate, int(self.avg_bytes_received), int(self.avg_packets_received))
         else:
-            return Report(self.avg_time, self.avg_download_rate, self.sum_bytes_received, self.sum_packets_received)
+            return Report(self.avg_time, self.avg_download_rate, int(self.avg_bytes_received), int(self.avg_packets_received))

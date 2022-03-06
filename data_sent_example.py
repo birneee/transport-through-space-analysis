@@ -49,7 +49,7 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
     ax.grid(True)
     ax.set_ylim(ymin=0, ymax=ymax)
     ax.set_xlim(xmin=0, xmax=max_ms/1000)
-    lgnd = ax.legend(fancybox=False, shadow=False)
+    lgnd = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), ncol=3, frameon=False)
     for handle in lgnd.legendHandles:
         handle._sizes = [30]
     ax.xaxis.set_major_formatter(QvisTimeAxisFormatter)
@@ -60,6 +60,7 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
     fig.savefig(output_path, bbox_inches='tight', dpi=600)
     print(f'saved plot as {output_path}')
     plt.plot()
+
 
 plot(500, 1000, './plots/data_sent_example_500ms.pdf')
 plot(500, 1000, './plots/data_sent_example_500ms_zoom.pdf', max_ms=3000, ymax=600000, xaxis_steps=1)
