@@ -1,8 +1,6 @@
 import statistics
 from typing import List
 
-import numpy as np
-
 from qvis_qperf.report import Report
 
 
@@ -43,8 +41,12 @@ class AggregatedReport:
     def avg_packets_received(self) -> float:
         return statistics.mean(map(lambda r: r.packets_received, self.reports))
 
-    def to_report(self, use_max_time: bool = False) -> Report:
-        if use_max_time:
-            return Report(self.max_time, self.avg_download_rate, int(self.avg_bytes_received), int(self.avg_packets_received))
-        else:
-            return Report(self.avg_time, self.avg_download_rate, int(self.avg_bytes_received), int(self.avg_packets_received))
+    def to_sum_report(self) -> Report:
+        """the returned report is a report with the summed bytes and packets received"""
+        return Report(self.max_time, self.avg_download_rate, int(self.sum_bytes_received),
+                      int(self.sum_packets_received))
+
+    def to_avg_report(self) -> Report:
+        """the returned report is a report with the average bytes and packets received"""
+        return Report(self.avg_time, self.avg_download_rate, int(self.avg_bytes_received),
+                      int(self.avg_packets_received))

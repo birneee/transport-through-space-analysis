@@ -21,7 +21,7 @@ def plot_rate(ax: Axes, connection: Connection | AggregatedConnection | List[Con
         ax.plot(seconds, download_rates, rasterized=True, label=label, color=color, marker=marker, linewidth=linewidth,
                 alpha=alpha, markersize=markersize, linestyle=linestyle)
     elif isinstance(connection, AggregatedConnection):
-        plot_rate(ax, connection.to_connection(), color=color, label=label, marker=marker, linewidth=linewidth,
+        plot_rate(ax, connection.to_avg_connection(), color=color, label=label, marker=marker, linewidth=linewidth,
                   alpha=alpha, markersize=markersize, linestyle=linestyle)
     elif isinstance(connection, List):
         connections = connection
@@ -61,7 +61,7 @@ def plot_data_received(ax: Axes, connection: Connection | AggregatedConnection, 
         ax.plot(seconds, bytes_received, rasterized=rasterized, label=label, color=color, marker=marker,
                 linewidth=linewidth, markersize=markersize, linestyle=linestyle)
     elif isinstance(connection, AggregatedConnection):
-        plot_data_received(ax, connection.to_connection(), rasterized=rasterized, label=label, color=color,
+        plot_data_received(ax, connection.to_avg_connection(), rasterized=rasterized, label=label, color=color,
                            marker=marker, linewidth=linewidth, markersize=markersize, linestyle=linestyle)
     else:
         raise "unsupported type"

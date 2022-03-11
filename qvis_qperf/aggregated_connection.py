@@ -41,16 +41,16 @@ class AggregatedConnection:
                     logging.warning(f'no report at index {index}')
             yield AggregatedReport(reports)
 
-    def to_connection(self, use_max_time: bool = False) -> Connection:
+    def to_avg_connection(self) -> Connection:
         connection = Connection.__new__(Connection)
         connection.time_to_first_byte = self.time_to_first_byte
-        connection.reports = list(map(lambda r: r.to_report(use_max_time=use_max_time), self.reports))
+        connection.reports = list(map(lambda r: r.to_avg_report(), self.reports))
         return connection
 
     def interceptions(self, other: Connection | AggregatedConnection) -> Iterator[BytesReceivedInterception]:
         if isinstance(other, AggregatedConnection):
-            return self.to_connection().interceptions(other.to_connection())
+            return self.to_avg_connection().interceptions(other.to_avg_connection())
         elif isinstance(other, Connection):
-            return self.to_connection().interceptions(other)
+            return self.to_avg_connection().interceptions(other)
         else:
             raise "unsupported type"

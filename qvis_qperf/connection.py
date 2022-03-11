@@ -15,14 +15,18 @@ CLIENT_REPORT_REGEX = r'^[^\d\.]+(?P<time>\d+\.?\d*)[^\d\.]+(?P<rate>\d+\.?\d*)[
 
 TIME_TO_FIRST_BYTE_REGEX = r'^[^\d\.]+time to first byte[^\d\.]+(?P<time>\d+\.?\d*)[^\d\.]+s$'
 
+INTERNAL_ERROR_REGEX = r'^.*INTERNAL_ERROR: (?P<text>.*)$'
+
 
 class Connection:
     time_to_first_byte: float
     reports: List[Report]
+    internal_error: Optional[str]
 
     def __init__(self, file: str, add_zero_report: bool = True, max_s: float = float('inf')):
         """parse qvis_qperf output file"""
         self.reports = []
+        self.internal_error = None
         with open(file) as file:
             for line in file:
                 match = re.match(CLIENT_REPORT_REGEX, line)
@@ -42,6 +46,9 @@ class Connection:
                     if add_zero_report:
                         self.reports.append(Report(self.time_to_first_byte, 0, 0, 0))
                     continue
+                match = re.match(INTERNAL_ERROR_REGEX, line)
+                if match:
+                    self.internal_error = str(match.group('text'))
 
     @property
     def mean_rate(self) -> float:
@@ -109,8 +116,9 @@ def reduce_steps(connection: Connection | List[Connection], n=10, keep_zero=True
     new_connection = Connection.__new__(Connection)
     new_connection.time_to_first_byte = connection.time_to_first_byte
     new_connection.reports = []
+    new_connection.internal_error = connection.internal_error
     if keep_zero:
         new_connection.reports.append(connection.reports[0])
     for i in range(1, len(connection.reports), n):
-        new_connection.reports.append(AggregatedReport(connection.reports[i:i + n]).to_report(use_max_time=True))
+        new_connection.reports.append(AggregatedReport(connection.reports[i:i + n]).to_sum_report())
     return new_connection
