@@ -44,6 +44,8 @@ def plot(connections: List[Connection], output_name: str, zero_at_ttfb: bool = F
     plt.plot()
 
     with open(f'./results/{output_name}.txt', 'w') as f:
+        f.write(f'runs: {len(connections)}\n')
+        f.write(f'runs with internal errors: {len(list(filter(lambda c: c.internal_error is not None, connections)))}\n')
         f.write(f'mean time to first byte: {agg_connection.time_to_first_byte} s\n')
         f.write(f'mean rate: {agg_connection.mean_rate} bit/s\n')
         f.write(f'total at 10s: {agg_connection.total_bytes_at(10)} byte\n')
