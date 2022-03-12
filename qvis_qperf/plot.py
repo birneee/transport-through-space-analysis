@@ -1,13 +1,14 @@
 import time
 from typing import List, Optional
 
+import matplotlib
 import numpy as np
 
 from .aggregated_connection import AggregatedConnection
 from matplotlib.axes import Axes
 import matplotlib.transforms as transforms
 
-from .connection import Connection
+from .connection import Connection, all_intersections
 
 
 def plot_rate(ax: Axes, connection: Connection | AggregatedConnection | List[Connection], color: str = '#0000ff',
@@ -66,3 +67,21 @@ def plot_data_received(ax: Axes, connection: Connection | AggregatedConnection, 
     else:
         raise "unsupported type"
     print(f'plotted in {time.time() - start}s')
+
+
+def plot_data_received_intersection(ax: Axes, connections: List[Connection], colors: [str], label: str = 'Intersections', markersize=None):
+    up_marker = matplotlib.markers.MarkerStyle(marker='|')
+    up_marker._transform = up_marker.get_transform().rotate_deg(-20)
+    down_marker = matplotlib.markers.MarkerStyle(marker='|')
+    down_marker._transform = down_marker.get_transform().rotate_deg(20)
+
+    if label is not None:
+        # fake plot for legend entry
+        ax.plot(0, 0, marker=down_marker, markersize=markersize, color=colors[0], label=label, linewidth=0, alpha=0.0)
+
+    # real plot
+    for interception in all_intersections(connections):
+        upper_color = colors[connections.index(interception.upper)]
+        lower_color = colors[connections.index(interception.lower)]
+        ax.plot(interception.time, interception.bytes_received, marker=up_marker, color = upper_color, markersize=markersize)
+        ax.plot(interception.time, interception.bytes_received, marker=down_marker, color = lower_color, markersize=markersize)

@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import itertools
 import os
 import re
 import statistics
@@ -85,9 +87,6 @@ class Connection:
         self_data = np.cumsum(list(map(lambda r: r.bytes_received, self.reports)))
         other_times = list(map(lambda r: r.time, other.reports))
         other_data = np.cumsum(list(map(lambda r: r.bytes_received, other.reports)))
-        # self_index = 0
-        # other_index = 0
-        # while self_index < len(self_times) - 1 and other_index < len(other_times):
         for self_index in range(0, len(self_times) - 1):
             for other_index in range(0, len(other_times) - 1):
                 l1 = Line(Point(self_times[self_index], self_data[self_index]),
@@ -96,9 +95,10 @@ class Connection:
                           Point(other_times[other_index + 1], other_data[other_index + 1]))
                 intersection = segments_intersection(l1, l2)
                 if intersection is not None:
-                    yield BytesReceivedInterception(intersection.point.x, int(intersection.point.y),
-                                                    positive=intersection.positive)
-
+                    if intersection.positive:
+                        yield BytesReceivedInterception(intersection.point.x, int(intersection.point.y), upper=self, lower=other)
+                    else:
+                        yield BytesReceivedInterception(intersection.point.x, int(intersection.point.y), upper=other, lower=self)
 
 def load_all_connections(dir: str, file_extension: str = '.log', max_s: float = float('inf')) -> List[Connection]:
     connections: List[Connection] = []
@@ -122,3 +122,9 @@ def reduce_steps(connection: Connection | List[Connection], n=10, keep_zero=True
     for i in range(1, len(connection.reports), n):
         new_connection.reports.append(AggregatedReport(connection.reports[i:i + n]).to_sum_report())
     return new_connection
+
+
+def all_intersections(connections: List[Connection]) -> Iterator[BytesReceivedInterception]:
+    for conn1, conn2 in itertools.combinations(connections, 2):
+        for interception in conn1.interceptions(conn2):
+            yield interception

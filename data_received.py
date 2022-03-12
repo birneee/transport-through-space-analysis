@@ -6,8 +6,8 @@ from matplotlib import pyplot as plt
 from qvis.plot import QvisTimeAxisFormatter, QvisByteAxisFormatter
 
 from qvis_qperf.aggregated_connection import AggregatedConnection
-from qvis_qperf.connection import load_all_connections
-from qvis_qperf.plot import plot_time_to_first_byte, plot_data_received
+from qvis_qperf.connection import load_all_connections, all_intersections
+from qvis_qperf.plot import plot_time_to_first_byte, plot_data_received, plot_data_received_intersection
 
 
 def plot(rtt_ms: int, output_path: str, start_time: float = 0, timespan: float = 40,
@@ -40,6 +40,15 @@ def plot(rtt_ms: int, output_path: str, start_time: float = 0, timespan: float =
     plot_time_to_first_byte(ax, conn_distributed_pep, color='#ffa600', label=None)
     plot_time_to_first_byte(ax, conn_distributed_pep_static_cc, color='tab:orange', label=None)
 
+    plot_data_received_intersection(
+        ax,
+        list(map(lambda c: c.to_avg_connection(),
+                 [conn_no_pep, conn_client_side_pep, conn_distributed_pep, conn_distributed_pep_static_cc])),
+        ['#253c4b', '#00885c', '#ffa600', 'tab:orange'],
+        label='Intersections',
+        markersize=15,
+    )
+
     ax.xaxis.set_label_text('Time (s)')
     ax.yaxis.set_label_text('Data (bytes)')
     ax.set_axisbelow(True)
@@ -66,18 +75,12 @@ def report_intercept(rtt_ms: int, output_path: str):
     conn_distributed_pep_static_cc = AggregatedConnection(load_all_connections(f'./data/{rtt_ms}ms_two_proxies/qperf'))
 
     with open(output_path, 'w') as f:
-        for title, conn1, conn2 in [
-            ('No PEP intersects client-side PEP', conn_no_pep, conn_client_side_pep),
-            ('No PEP intersects distributed PEP', conn_no_pep, conn_distributed_pep),
-            ('No PEP intersects distributed PEP (static CC)', conn_no_pep, conn_distributed_pep_static_cc),
-            ('Client-side PEP intersects distributed PEP', conn_client_side_pep, conn_distributed_pep),
-            ('Distributed PEP intersects distributed PEP (static CC)', conn_distributed_pep,
-             conn_distributed_pep_static_cc),
-        ]:
-            f.write(f'{title}\n')
-            for interception in conn1.interceptions(conn2):
-                f.write(
-                    f'\t{interception.time}s {interception.bytes_received}B {"+" if interception.positive else "-"}\n')
+        connections = list(map(lambda c: c.to_avg_connection(), [conn_no_pep, conn_client_side_pep, conn_distributed_pep, conn_distributed_pep_static_cc]))
+        connection_names = ['No PEP', 'Client-side PEP', 'Distributed PEP', 'Distributed PEP (static CC)']
+        for interception in all_intersections(connections):
+            upper_name = connection_names[connections.index(interception.upper)]
+            lower_name = connection_names[connections.index(interception.lower)]
+            f.write(f'{upper_name} overtakes {lower_name} at {interception.time}s {interception.bytes_received}B\n')
 
 
 plot(72, './plots/data_received_72ms.pdf', xaxis_steps=2)

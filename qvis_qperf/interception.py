@@ -1,12 +1,12 @@
-from typing import Optional
-
 
 class BytesReceivedInterception:
     time: float
     bytes_received: int
-    positive: Optional[bool]
+    upper: 'Connection'
+    lower: 'Connection'
 
-    def __init__(self, time: float, bytes_received: int, positive: Optional[bool] = None):
+    def __init__(self, time: float, bytes_received: int, upper: 'Connection', lower: 'Connection'):
         self.time = time
         self.bytes_received = bytes_received
-        self.positive = positive
+        self.upper = upper
+        self.lower = lower
