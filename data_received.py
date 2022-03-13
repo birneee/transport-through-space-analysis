@@ -92,7 +92,7 @@ plot(2000, './plots/data_received_2000ms.pdf', xaxis_steps=2)
 plot(72, './plots/data_received_72ms_zoom.pdf', timespan=1.5, xaxis_steps=0.1)
 plot(220, './plots/data_received_220ms_zoom.pdf', start_time=0.6, timespan=2, xaxis_steps=0.2)
 plot(500, './plots/data_received_500ms_zoom.pdf', start_time=1.4, timespan=2, xaxis_steps=0.2)
-plot(1000, './plots/data_received_1000ms_zoom.pdf', start_time=3, timespan=3.5, xaxis_steps=0.2)
+plot(1000, './plots/data_received_1000ms_zoom.pdf', start_time=3, timespan=3.4, xaxis_steps=0.2)
 plot(2000, './plots/data_received_2000ms_zoom.pdf', start_time=6, timespan=5, xaxis_steps=0.5)
 
 report_intercept(72, './results/data_received_intercept_72ms.txt')
