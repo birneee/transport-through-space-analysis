@@ -22,7 +22,7 @@ class AggregatedConnection:
     def total_bytes_at(self, time: float) -> float:
         """time: in seconds"""
         """in bytes"""
-        return statistics.mean(map(lambda c: c.total_bytes_at(time), self.connections))
+        return statistics.mean(map(lambda c: c.total_received_bytes_at(time), self.connections))
 
     @property
     def mean_rate(self) -> float:
@@ -49,8 +49,8 @@ class AggregatedConnection:
 
     def interceptions(self, other: Connection | AggregatedConnection) -> Iterator[BytesReceivedInterception]:
         if isinstance(other, AggregatedConnection):
-            return self.to_avg_connection().interceptions(other.to_avg_connection())
+            return self.to_avg_connection().intersections(other.to_avg_connection())
         elif isinstance(other, Connection):
-            return self.to_avg_connection().interceptions(other)
+            return self.to_avg_connection().intersections(other)
         else:
             raise "unsupported type"

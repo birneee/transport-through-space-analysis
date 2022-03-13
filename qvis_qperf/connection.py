@@ -72,9 +72,9 @@ class Connection:
             reports.append(report)
         return reports
 
-    def total_bytes_at(self, time: float) -> float:
-        """time: in seconds"""
-        """in bytes"""
+    def total_received_bytes_at(self, time: float) -> float:
+        """time: in seconds\n
+        returns bytes"""
         total = 0
         for report in self.reports:
             if report.time > time:
@@ -82,7 +82,16 @@ class Connection:
             total += report.bytes_received
         return total
 
-    def interceptions(self, other: Connection) -> Iterator[BytesReceivedInterception]:
+    def time_to_received_bytes(self, bytes: int) -> Optional[float]:
+        """return time in seconds, or None if that many bytes are never received"""
+        total_bytes = 0
+        for report in self.reports:
+            total_bytes += report.bytes_received
+            if total_bytes >= bytes:
+                return report.time
+        return None
+
+    def intersections(self, other: Connection) -> Iterator[BytesReceivedInterception]:
         self_times = list(map(lambda r: r.time, self.reports))
         self_data = np.cumsum(list(map(lambda r: r.bytes_received, self.reports)))
         other_times = list(map(lambda r: r.time, other.reports))
@@ -126,5 +135,5 @@ def reduce_steps(connection: Connection | List[Connection], n=10, keep_zero=True
 
 def all_intersections(connections: List[Connection]) -> Iterator[BytesReceivedInterception]:
     for conn1, conn2 in itertools.combinations(connections, 2):
-        for interception in conn1.interceptions(conn2):
-            yield interception
+        for intersection in conn1.intersections(conn2):
+            yield intersection

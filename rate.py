@@ -43,15 +43,6 @@ def plot(connections: List[Connection], output_name: str, zero_at_ttfb: bool = F
     print(f'saved plot as {output_path}')
     plt.plot()
 
-    with open(f'./results/{output_name}.txt', 'w') as f:
-        f.write(f'runs: {len(connections)}\n')
-        f.write(f'runs with internal errors: {len(list(filter(lambda c: c.internal_error is not None, connections)))}\n')
-        f.write(f'mean time to first byte: {agg_connection.time_to_first_byte} s\n')
-        f.write(f'mean rate: {agg_connection.mean_rate} bit/s\n')
-        f.write(f'total at 10s: {agg_connection.total_bytes_at(10)} byte\n')
-        f.write(f'total at 20s: {agg_connection.total_bytes_at(20)} byte\n')
-        f.write(f'total at 30s: {agg_connection.total_bytes_at(30)} byte\n')
-
 
 plot(reduce_steps(load_all_connections('./data/72ms/qperf'), 10), 'rate_72ms')
 plot(reduce_steps(load_all_connections('./data/72ms_client_side_proxy/qperf'), 10), 'rate_72ms_client_side_proxy')
