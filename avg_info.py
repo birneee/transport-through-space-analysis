@@ -13,10 +13,13 @@ def create_report(connections: List[Connection], output_name: str):
         f.write(f'runs with internal errors: {len(list(filter(lambda c: c.internal_error is not None, connections)))}\n')
         f.write(f'mean time to first byte: {agg_connection.time_to_first_byte} s\n')
         f.write(f'mean rate: {agg_connection.mean_rate} bit/s\n')
+        f.write(f'total at 5s: {agg_connection.total_bytes_at(5)} byte\n')
         f.write(f'total at 10s: {agg_connection.total_bytes_at(10)} byte\n')
         f.write(f'total at 20s: {agg_connection.total_bytes_at(20)} byte\n')
         f.write(f'total at 30s: {agg_connection.total_bytes_at(30)} byte\n')
+        f.write(f'total at 40s: {agg_connection.total_bytes_at(40)} byte\n')
         f.write(f'time to first 1MB: {agg_connection.to_avg_connection().time_to_received_bytes(1_000_000)} s\n')
+        f.write(f'time to first 2MB: {agg_connection.to_avg_connection().time_to_received_bytes(2_000_000)} s\n')
         f.write(f'time to first 10MB: {agg_connection.to_avg_connection().time_to_received_bytes(10_000_000)} s\n')
         f.write(f'time to first 100MB: {agg_connection.to_avg_connection().time_to_received_bytes(100_000_000)} s\n')
 
