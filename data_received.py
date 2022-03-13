@@ -11,7 +11,7 @@ from qvis_qperf.plot import plot_time_to_first_byte, plot_data_received, plot_da
 
 
 def plot(rtt_ms: int, output_path: str, start_time: float = 0, timespan: float = 40,
-         xaxis_steps: Optional[float] = None):
+         xaxis_steps: Optional[float] = None, show_max_line:bool = True, ymax: Optional[float] = None):
     end_time = start_time + timespan
 
     conn_no_pep = AggregatedConnection(load_all_connections(f'./data/{rtt_ms}ms/qperf', max_s=end_time + 0.1))
@@ -28,7 +28,8 @@ def plot(rtt_ms: int, output_path: str, start_time: float = 0, timespan: float =
         "pgf.rcfonts": False,
     })
     fig, ax = plt.subplots()
-    ax.axline((0, 0), (1, 100_000_000 / 8), color='gray', linestyle=(0, (1, 10)))
+    if show_max_line:
+        ax.axline((0, 0), (1, 100_000_000 / 8), color='gray', linestyle=(0, (1, 10)))
     plot_data_received(ax, conn_no_pep, label=r'No PEP', color='#253c4b', linewidth=1.5)
     plot_data_received(ax, conn_client_side_pep, label='Client-side PEP', color='#00885c', linewidth=1.5)
     plot_data_received(ax, conn_distributed_pep, label='Distributed PEP', color='#ffa600', linewidth=1.5)
@@ -53,7 +54,7 @@ def plot(rtt_ms: int, output_path: str, start_time: float = 0, timespan: float =
     ax.yaxis.set_label_text('Data (bytes)')
     ax.set_axisbelow(True)
     ax.grid(True)
-    ax.set_ylim(ymin=0, ymax=None)
+    ax.set_ylim(ymin=0, ymax=ymax)
     ax.set_xlim(xmin=start_time, xmax=end_time)
     lgnd = ax.legend(fancybox=False, shadow=False, loc='lower center', bbox_to_anchor=(0.47, -0.22), ncol=3,
                      frameon=False)
@@ -93,7 +94,7 @@ plot(72, './plots/data_received_72ms_zoom.pdf', timespan=1.5, xaxis_steps=0.1)
 plot(220, './plots/data_received_220ms_zoom.pdf', start_time=0.6, timespan=2, xaxis_steps=0.2)
 plot(500, './plots/data_received_500ms_zoom.pdf', start_time=1.4, timespan=2, xaxis_steps=0.2)
 plot(1000, './plots/data_received_1000ms_zoom.pdf', start_time=3, timespan=3.4, xaxis_steps=0.2)
-plot(2000, './plots/data_received_2000ms_zoom.pdf', start_time=6, timespan=5, xaxis_steps=0.5)
+plot(2000, './plots/data_received_2000ms_zoom.pdf', start_time=6, timespan=5, xaxis_steps=0.5, ymax=2_000_000)
 
 report_intercept(72, './results/data_received_intercept_72ms.txt')
 report_intercept(220, './results/data_received_intercept_220ms.txt')
