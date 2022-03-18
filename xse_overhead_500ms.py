@@ -18,16 +18,6 @@ conn: Connection = read_qlog('./data/500ms_two_proxies_simple/qlog/client.qlog.g
 conn_xse: Connection = read_qlog('./data/500ms_two_proxies_simple_xse/qlog/client.qlog.gz',
                                  max_ms=max_ms, shift_ms=1000)
 
-# %% results
-with open(f'./results/{file_name}.txt', 'w') as f:
-    f.write(f'without xse: {conn.avg_stream_receive_rate(0)} bit/s\n')
-    xse_raw = conn_xse.avg_stream_receive_rate(0)
-    f.write(f'with xse: raw: {xse_raw} bit/s\n')
-    xse_data = conn_xse.avg_xse_stream_receive_rate(0)
-    f.write(f'with xse: payload: {xse_data} bit/s\n')
-    overhead_ratio = (xse_raw - xse_data) / xse_data
-    f.write(f'with xse: overhead: {overhead_ratio}\n')
-
 # %% plot
 plt.rcParams.update({
     "font.family": "serif",
