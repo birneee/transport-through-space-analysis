@@ -62,7 +62,10 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
     plt.plot()
 
 
+plot(72, 144, './plots/data_sent_example_72ms.pdf')
+plot(220, 440, './plots/data_sent_example_220ms.pdf')
 plot(500, 1000, './plots/data_sent_example_500ms.pdf')
 plot(500, 1000, './plots/data_sent_example_500ms_zoom.pdf', max_ms=3000, ymax=600000, xaxis_steps=1)
 plot(1000, 2000, './plots/data_sent_example_1000ms.pdf')
 plot(1000, 2000, './plots/data_sent_example_1000ms_zoom.pdf', max_ms=6000, ymax=600000, xaxis_steps=1)
+plot(2000, 4000, './plots/data_sent_example_2000ms.pdf')
