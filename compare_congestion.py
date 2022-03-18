@@ -32,7 +32,7 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
     plot_congestion_window(ax, conn_1p, label='Client-side PEP', color='#00885c', linestyle='dashed', linewidth=1.5)
     plot_congestion_window(ax, conn_2p_simple, label='Distributed PEP', color='#ffa600', linestyle='dashed', linewidth=1.5)
     plot_congestion_window(ax, conn_2p, label='Distributed PEP (static CC)', color='tab:orange', linestyle='dashed', linewidth=1.5)
-    fig.set_size_inches(8, 6)
+    fig.set_size_inches(8, 3)
     ax.set_axisbelow(True)
     ax.grid(True)
     ax.set_ylim(ymin=0)
