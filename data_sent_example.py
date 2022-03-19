@@ -8,7 +8,8 @@ from qvis.plot import QvisByteAxisFormatter, QvisTimeAxisFormatter, plot_availab
     plot_remote_stream_flow_limit, plot_stream_data_sent
 
 
-def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_ms: int = 40000, ymax = None, xaxis_steps: int = 2):
+def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_ms: int = 40000, ymax=None,
+         xaxis_steps: float = 2):
     conn: Connection = read_qlog(f'./data/{rtt_ms}ms/qlog/server.qlog.gz', max_ms=max_ms)
     conn_1p: Connection = read_qlog(f'./data/{rtt_ms}ms_client_side_proxy/qlog/server.qlog.gz', max_ms=max_ms)
     conn_2p: Connection = read_qlog(f'./data/{rtt_ms}ms_two_proxies/qlog/server_side_proxy_client_facing.qlog.gz',
@@ -38,10 +39,13 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
     plot_remote_stream_flow_limit(ax, conn_2p, 0, label=None, color='tab:orange', linestyle='dashed')
 
     plot_available_congestion_window_of_stream(ax, conn, 0, label='Congestion window', color='#253c4b',
-                                               linestyle='dotted')
-    plot_available_congestion_window_of_stream(ax, conn_1p, 0, label=None, color='#00885c', linestyle='dotted')
-    plot_available_congestion_window_of_stream(ax, conn_2p_simple, 0, label=None, color='#ffa600', linestyle='dotted')
-    plot_available_congestion_window_of_stream(ax, conn_2p, 0, label=None, color='tab:orange', linestyle='dotted')
+                                               linestyle='dotted', chunk_size=10)
+    plot_available_congestion_window_of_stream(ax, conn_1p, 0, label=None, color='#00885c', linestyle='dotted',
+                                               chunk_size=10)
+    plot_available_congestion_window_of_stream(ax, conn_2p_simple, 0, label=None, color='#ffa600', linestyle='dotted',
+                                               chunk_size=10)
+    plot_available_congestion_window_of_stream(ax, conn_2p, 0, label=None, color='tab:orange', linestyle='dotted',
+                                               chunk_size=10)
 
     ax.margins(0)
     fig.set_size_inches(8, 6)
@@ -52,7 +56,6 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
     lgnd = ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), ncol=3, frameon=False)
     for handle in lgnd.legendHandles:
         handle._sizes = [30]
-    ax.xaxis.set_major_formatter(QvisTimeAxisFormatter)
     ax.xaxis.set_major_locator(matplotlib.ticker.MultipleLocator(xaxis_steps))
     ax.yaxis.set_major_formatter(QvisByteAxisFormatter)
     ax.xaxis.set_label_text('Time (s)')
@@ -65,7 +68,11 @@ def plot(rtt_ms: int, server_side_proxy_handover_ms: int, output_path: str, max_
 plot(72, 144, './plots/data_sent_example_72ms.pdf')
 plot(220, 440, './plots/data_sent_example_220ms.pdf')
 plot(500, 1000, './plots/data_sent_example_500ms.pdf')
-plot(500, 1000, './plots/data_sent_example_500ms_zoom.pdf', max_ms=3000, ymax=600000, xaxis_steps=1)
 plot(1000, 2000, './plots/data_sent_example_1000ms.pdf')
-plot(1000, 2000, './plots/data_sent_example_1000ms_zoom.pdf', max_ms=6000, ymax=600000, xaxis_steps=1)
 plot(2000, 4000, './plots/data_sent_example_2000ms.pdf')
+
+plot(72, 144, './plots/data_sent_example_72ms_zoom.pdf', max_ms=500, ymax=1000000, xaxis_steps=0.1)
+plot(220, 440, './plots/data_sent_example_220ms_zoom.pdf', max_ms=1500, ymax=1000000, xaxis_steps=0.2)
+plot(500, 1000, './plots/data_sent_example_500ms_zoom.pdf', max_ms=3500, ymax=1000000, xaxis_steps=0.5)
+plot(1000, 2000, './plots/data_sent_example_1000ms_zoom.pdf', max_ms=7000, ymax=1000000, xaxis_steps=1)
+plot(2000, 4000, './plots/data_sent_example_2000ms_zoom.pdf', max_ms=14000, ymax=1000000, xaxis_steps=1)
