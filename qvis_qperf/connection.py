@@ -17,10 +17,13 @@ CLIENT_REPORT_REGEX = r'^[^\d\.]+(?P<time>\d+\.?\d*)[^\d\.]+(?P<rate>\d+\.?\d*)[
 
 TIME_TO_FIRST_BYTE_REGEX = r'^[^\d\.]+time to first byte[^\d\.]+(?P<time>\d+\.?\d*)[^\d\.]+s$'
 
+ESTABLISHMENT_TIME_REGEX = r'^[^\d\.]+connection establishment time[^\d\.]+(?P<time>\d+\.?\d*)[^\d\.]+s$'
+
 INTERNAL_ERROR_REGEX = r'^.*INTERNAL_ERROR: (?P<text>.*)$'
 
 
 class Connection:
+    establishment_time: float
     time_to_first_byte: float
     reports: List[Report]
     internal_error: Optional[str]
@@ -42,6 +45,10 @@ class Connection:
                             int(match.group('packets')),
                         ))
                     continue
+                match = re.match(ESTABLISHMENT_TIME_REGEX, line)
+                if match:
+                    self.establishment_time = float(match.group('time'))
+                    continue
                 match = re.match(TIME_TO_FIRST_BYTE_REGEX, line)
                 if match:
                     self.time_to_first_byte = float(match.group('time'))
@@ -52,10 +59,39 @@ class Connection:
                 if match:
                     self.internal_error = str(match.group('text'))
 
+    def mean_rate(self, exclude_zero_report: bool = True, start_time: float = 0) -> float:
+        """starting from time to first byte\n
+        start_time in seconds
+        in bit per second"""
+        reports = self.reports
+        reports = map(lambda e: e[1], filter(lambda e: e[0] != 0 or not exclude_zero_report or e[1].bytes_received != 0,
+                                             enumerate(self.reports)))
+        reports = filter(lambda r: r.time >= start_time, reports)
+        return statistics.mean(map(lambda r: r.download_rate, reports))
+
     @property
-    def mean_rate(self) -> float:
-        """in bit per second"""
-        return statistics.mean(map(lambda r: r.download_rate, self.reports))
+    def mean_rate_after_ramp_up(self) -> float:
+        """!!! very inaccurate, searches for first rate drop
+        in bit per second"""
+        return self.mean_rate(start_time=self.ramp_up_time_from_start)
+
+    @property
+    def ramp_up_time_from_start(self) -> float:
+        """!!! very inaccurate, searches for first rate drop
+        in seconds"""
+        max_report = self.reports[0]
+        for report in self.reports[1:]:
+            if report.time < self.time_to_first_byte:
+                continue
+            if report.download_rate < max_report.download_rate:
+                return max_report.time
+            max_report = report
+
+    @property
+    def ramp_up_time_from_ttfb(self) -> float:
+        """!!! very inaccurate, searches for first rate drop
+        in seconds"""
+        return self.ramp_up_time_from_start - self.time_to_first_byte
 
     @property
     def max_time(self) -> float:
@@ -105,9 +141,23 @@ class Connection:
                 intersection = segments_intersection(l1, l2)
                 if intersection is not None:
                     if intersection.positive:
-                        yield BytesReceivedInterception(intersection.point.x, int(intersection.point.y), upper=self, lower=other)
+                        yield BytesReceivedInterception(intersection.point.x, int(intersection.point.y), upper=self,
+                                                        lower=other)
                     else:
-                        yield BytesReceivedInterception(intersection.point.x, int(intersection.point.y), upper=other, lower=self)
+                        yield BytesReceivedInterception(intersection.point.x, int(intersection.point.y), upper=other,
+                                                        lower=self)
+
+    def reduce_steps(self, n: int, keep_zero: bool = True) -> Connection:
+        new_connection = Connection.__new__(Connection)
+        new_connection.establishment_time = self.establishment_time
+        new_connection.time_to_first_byte = self.time_to_first_byte
+        new_connection.reports = []
+        new_connection.internal_error = self.internal_error
+        if keep_zero:
+            new_connection.reports.append(self.reports[0])
+        for i in range(1 if keep_zero else 0, len(self.reports), n):
+            new_connection.reports.append(AggregatedReport(self.reports[i:i + n]).to_sum_report())
+        return new_connection
 
 def load_all_connections(dir: str, file_extension: str = '.log', max_s: float = float('inf')) -> List[Connection]:
     connections: List[Connection] = []
@@ -122,15 +172,7 @@ def reduce_steps(connection: Connection | List[Connection], n=10, keep_zero=True
     if isinstance(connection, List):
         connections = connection
         return list(map(lambda c: reduce_steps(c, n, keep_zero), connections))
-    new_connection = Connection.__new__(Connection)
-    new_connection.time_to_first_byte = connection.time_to_first_byte
-    new_connection.reports = []
-    new_connection.internal_error = connection.internal_error
-    if keep_zero:
-        new_connection.reports.append(connection.reports[0])
-    for i in range(1, len(connection.reports), n):
-        new_connection.reports.append(AggregatedReport(connection.reports[i:i + n]).to_sum_report())
-    return new_connection
+    return connection.reduce_steps(n, keep_zero=keep_zero)
 
 
 def all_intersections(connections: List[Connection]) -> Iterator[BytesReceivedInterception]:

@@ -11,8 +11,17 @@ def create_report(connections: List[Connection], output_name: str):
     with open(f'./results/{output_name}.txt', 'w') as f:
         f.write(f'runs: {len(connections)}\n')
         f.write(f'runs with internal errors: {len(list(filter(lambda c: c.internal_error is not None, connections)))}\n')
+        f.write(f'mean connection establishment time: {agg_connection.establishment_time} s\n')
         f.write(f'mean time to first byte: {agg_connection.time_to_first_byte} s\n')
-        f.write(f'mean rate: {agg_connection.mean_rate} bit/s\n')
+        f.write(f'mean rate (from ttfb): {agg_connection.mean_rate()} bit/s\n')
+        if agg_connection.time_to_first_byte > 6:
+            # for 2000ms rtt scenarios
+            f.write(f'inaccurate mean ramp up time (from ttfb): {agg_connection.reduce_steps(20).ramp_up_time_from_ttfb}\n')
+            f.write(
+                f'inaccurate mean rate (after ramp up): {agg_connection.reduce_steps(20).mean_rate_after_ramp_up} bit/s\n')
+        else:
+            f.write(f'inaccurate mean ramp up time (from ttfb): {agg_connection.reduce_steps(10).ramp_up_time_from_ttfb}\n')
+            f.write(f'inaccurate mean rate (after ramp up): {agg_connection.reduce_steps(10).mean_rate_after_ramp_up} bit/s\n')
         f.write(f'total at 5s: {agg_connection.total_bytes_at(5)} byte\n')
         f.write(f'total at 10s: {agg_connection.total_bytes_at(10)} byte\n')
         f.write(f'total at 20s: {agg_connection.total_bytes_at(20)} byte\n')
