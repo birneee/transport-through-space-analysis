@@ -3,6 +3,12 @@ from typing import List
 
 from qvis_qperf.aggregated_connection import AggregatedConnection
 from qvis_qperf.connection import Connection, load_all_connections
+from qvis_qperf.plot import mean_confidence_interval
+
+
+def report_bytes_at_second(output, conn: AggregatedConnection, time: float):
+    mean, cil, ciu, = mean_confidence_interval(list(map(lambda c: c.total_received_bytes_at(time), conn.connections)))
+    output.write(f'total at {time}s: {mean} byte (95% CI [{cil}, {ciu}])\n')
 
 
 def create_report(connections: List[Connection], output_name: str):

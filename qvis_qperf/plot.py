@@ -3,12 +3,21 @@ from typing import List, Optional
 
 import matplotlib
 import numpy as np
+from scipy import stats
 
 from .aggregated_connection import AggregatedConnection
 from matplotlib.axes import Axes
 import matplotlib.transforms as transforms
 
 from .connection import Connection, all_intersections
+
+
+def mean_confidence_interval(data, confidence=0.95):
+    a = 1.0 * np.array(data)
+    n = len(a)
+    m, se = np.mean(a), stats.sem(a)
+    h = se * stats.t.ppf((1 + confidence) / 2., n-1)
+    return m, m-h, m+h
 
 
 def plot_rate(ax: Axes, connection: Connection | AggregatedConnection | List[Connection], color: str = '#0000ff',
@@ -85,3 +94,14 @@ def plot_data_received_intersection(ax: Axes, connections: List[Connection], col
         lower_color = colors[connections.index(interception.lower)]
         ax.plot(interception.time, interception.bytes_received, marker=up_marker, color = upper_color, markersize=markersize)
         ax.plot(interception.time, interception.bytes_received, marker=down_marker, color = lower_color, markersize=markersize)
+
+def plot_bytes_at_second(ax: Axes, connections: List[List[Connection]], time: float, confidence: float = 0.95, x:List[str] = 'bytes', label:str='Received', color='black', transform=None):
+    means = []
+    lerrs = []
+    uerrs = []
+    for connections in connections:
+        mean, cil, ciu, = mean_confidence_interval(list(map(lambda c: c.total_received_bytes_at(time), connections)), confidence=confidence)
+        means.append(mean)
+        lerrs.append(abs(cil-mean))
+        uerrs.append(abs(ciu-mean))
+    ax.errorbar(x=x, y=means, yerr=[lerrs, uerrs], color=color, fmt='o', capsize=5, label=label, transform=transform)
