@@ -1,10 +1,22 @@
 #!/bin/bash
 
-QPERF_BIN=$(realpath "../qperf-go/qperf-go")
-SCENARIO_DIR=$(realpath "../qperf-go/scenarios")
-OUTPUT_DIR=$(realpath "data")
+if ! command -v qperf-go &> /dev/null; then
+  echo "qperf-go not found"
+  exit 1
+fi
+if ! command -v perl-rename &> /dev/null; then
+  echo "perl-rename not found"
+  exit 1
+fi
+if ! command -v gzip &> /dev/null; then
+  echo "gzip not found"
+  exit 1
+fi
 
-PATH="$PATH:$SCENARIO_DIR"
+SCENARIO_DIR=$(realpath ".")
+OUTPUT_DIR=$(realpath "../data")
+
+export PATH="$PATH:$SCENARIO_DIR"
 
 function rename_qlog() {
   find . -maxdepth 1 -name '*.qlog' -exec perl-rename 's/^(.+)_[0-9a-f]+\.qlog/$1\.qlog/' {} \;
@@ -21,7 +33,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=72 QLOG=1 delay.sh
+    RTT=72 QLOG=1 no_pep.sh
     rename_qlog
     zip_qlog
   fi
@@ -32,7 +44,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=220 QLOG=1 delay.sh
+    RTT=220 QLOG=1 no_pep.sh
     rename_qlog
     zip_qlog
   fi
@@ -43,7 +55,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=500 QLOG=1 delay.sh
+    RTT=500 QLOG=1 no_pep.sh
     rename_qlog
     zip_qlog
   fi
@@ -54,7 +66,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=1000 QLOG=1 delay.sh
+    RTT=1000 QLOG=1 no_pep.sh
     rename_qlog
     zip_qlog
   fi
@@ -65,7 +77,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=2000 QLOG=1 delay.sh
+    RTT=2000 QLOG=1 no_pep.sh
     rename_qlog
     zip_qlog
   fi
@@ -128,14 +140,14 @@ function zip_qlog() {
   fi
 )
 
-# QLOG two proxies
+# QLOG two proxies with static congestion control
 
 (
   DIR=$OUTPUT_DIR/72ms_two_proxies/qlog
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=72 QLOG=1 delay_two_proxies.sh
+    RTT=72 QLOG=1 distributed_pep_static_cc.sh
     rename_qlog
     zip_qlog
   fi
@@ -146,7 +158,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=220 QLOG=1 delay_two_proxies.sh
+    RTT=220 QLOG=1 distributed_pep_static_cc.sh
     rename_qlog
     zip_qlog
   fi
@@ -157,7 +169,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=500 QLOG=1 delay_two_proxies.sh
+    RTT=500 QLOG=1 distributed_pep_static_cc.sh
     rename_qlog
     zip_qlog
   fi
@@ -168,7 +180,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=1000 QLOG=1 delay_two_proxies.sh
+    RTT=1000 QLOG=1 distributed_pep_static_cc.sh
     rename_qlog
     zip_qlog
   fi
@@ -179,7 +191,7 @@ function zip_qlog() {
   if [ ! -d "$DIR" ]; then
     mkdir -p "$DIR"
     cd "$DIR";
-    RTT=2000 QLOG=1 delay_two_proxies.sh
+    RTT=2000 QLOG=1 distributed_pep_static_cc.sh
     rename_qlog
     zip_qlog
   fi
@@ -307,7 +319,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
+      RTT=72 RAW=1 INTERVAL=0.1 no_pep.sh | tee $i.log;
     done
   fi
 )
@@ -318,7 +330,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
+      RTT=220 RAW=1 INTERVAL=0.1 no_pep.sh | tee $i.log;
     done
   fi
 )
@@ -329,7 +341,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
+      RTT=500 RAW=1 INTERVAL=0.1 no_pep.sh | tee $i.log;
     done
   fi
 )
@@ -340,7 +352,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
+      RTT=1000 RAW=1 INTERVAL=0.1 no_pep.sh | tee $i.log;
     done
   fi
 )
@@ -351,7 +363,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=2000 RAW=1 INTERVAL=0.1 delay.sh | tee $i.log;
+      RTT=2000 RAW=1 INTERVAL=0.1 no_pep.sh | tee $i.log;
     done
   fi
 )
@@ -364,7 +376,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
+      RTT=72 RAW=1 INTERVAL=0.1 client_side_pep.sh | tee $i.log;
     done
   fi
 )
@@ -375,7 +387,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
+      RTT=220 RAW=1 INTERVAL=0.1 client_side_pep.sh | tee $i.log;
     done
   fi
 )
@@ -386,7 +398,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
+      RTT=500 RAW=1 INTERVAL=0.1 client_side_pep.sh | tee $i.log;
     done
   fi
 )
@@ -397,7 +409,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
+      RTT=1000 RAW=1 INTERVAL=0.1 client_side_pep.sh | tee $i.log;
     done
   fi
 )
@@ -408,12 +420,12 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=2000 RAW=1 INTERVAL=0.1 delay_proxy.sh | tee $i.log;
+      RTT=2000 RAW=1 INTERVAL=0.1 client_side_pep.sh | tee $i.log;
     done
   fi
 )
 
-# QPERF two proxies
+# QPERF two proxies with static congestion control
 
 (
   DIR=$OUTPUT_DIR/72ms_two_proxies/qperf
@@ -421,7 +433,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+      RTT=72 RAW=1 INTERVAL=0.1 distributed_pep_static_cc.sh | tee $i.log;
     done
   fi
 )
@@ -432,7 +444,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+      RTT=220 RAW=1 INTERVAL=0.1 distributed_pep_static_cc.sh | tee $i.log;
     done
   fi
 )
@@ -443,7 +455,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+      RTT=500 RAW=1 INTERVAL=0.1 distributed_pep_static_cc.sh | tee $i.log;
     done
   fi
 )
@@ -454,7 +466,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+      RTT=1000 RAW=1 INTERVAL=0.1 distributed_pep_static_cc.sh | tee $i.log;
     done
   fi
 )
@@ -465,7 +477,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=2000 RAW=1 INTERVAL=0.1 delay_two_proxies.sh | tee $i.log;
+      RTT=2000 RAW=1 INTERVAL=0.1 distributed_pep_static_cc.sh | tee $i.log;
     done
   fi
 )
@@ -478,7 +490,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=72 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -489,7 +501,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=220 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -500,7 +512,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=500 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -511,7 +523,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=1000 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -522,7 +534,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=2000 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=2000 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -535,7 +547,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=72 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=72 XSE=1 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -546,7 +558,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=220 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=220 XSE=1 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -557,7 +569,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=500 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=500 XSE=1 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
@@ -568,7 +580,7 @@ function zip_qlog() {
     mkdir -p "$DIR"
     cd "$DIR";
     for i in {1..100}; do
-      RTT=1000 XSE=1 RAW=1 INTERVAL=0.1 delay_two_proxies_simple.sh | tee $i.log;
+      RTT=1000 XSE=1 RAW=1 INTERVAL=0.1 distributed_pep.sh | tee $i.log;
     done
   fi
 )
