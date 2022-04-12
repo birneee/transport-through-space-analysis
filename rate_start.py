@@ -10,10 +10,9 @@ from qvis_qperf.connection import Connection, load_all_connections, reduce_steps
 from qvis_qperf.plot import plot_time_to_first_byte, plot_rate
 
 
-def plot(connections: List[Connection], output_name: str, zero_at_ttfb: bool = False, timespan: float = 40):
+def plot(connections: List[Connection], output_name: str, start_time: float = 0, start_at_ttfb: bool = False, timespan: float = 40):
     agg_connection = AggregatedConnection(connections)
-    start_time = 0
-    if zero_at_ttfb:
+    if start_at_ttfb:
         start_time = math.floor(agg_connection.time_to_first_byte)
     end_time = start_time + timespan
     plt.rcParams.update({
@@ -45,31 +44,31 @@ def plot(connections: List[Connection], output_name: str, zero_at_ttfb: bool = F
     plt.plot()
 
 
-plot(reduce_steps(load_all_connections('./data/72ms/qperf'), 2), 'rate_start_72ms', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/72ms_client_side_proxy/qperf'), 2), 'rate_start_72ms_client_side_proxy', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/72ms_two_proxies/qperf'), 2), 'rate_start_72ms_two_proxies', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/72ms_two_proxies_simple/qperf'), 2), 'rate_start_72ms_two_proxies_simple', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/72ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_72ms_two_proxies_simple_xse', zero_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/72ms/qperf'), 2), 'rate_start_72ms', start_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/72ms_client_side_proxy/qperf'), 2), 'rate_start_72ms_client_side_proxy', start_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/72ms_two_proxies/qperf'), 2), 'rate_start_72ms_two_proxies', start_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/72ms_two_proxies_simple/qperf'), 2), 'rate_start_72ms_two_proxies_simple', start_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/72ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_72ms_two_proxies_simple_xse', start_at_ttfb=True, timespan=5)
 
-plot(reduce_steps(load_all_connections('./data/220ms/qperf'), 2), 'rate_start_220ms', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/220ms_client_side_proxy/qperf'), 2), 'rate_start_220ms_client_side_proxy', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/220ms_two_proxies/qperf'), 2), 'rate_start_220ms_two_proxies', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/220ms_two_proxies_simple/qperf'), 2), 'rate_start_220ms_two_proxies_simple', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/220ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_220ms_two_proxies_simple_xse', zero_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/220ms/qperf'), 2), 'rate_start_220ms', start_time=0, timespan=5)
+plot(reduce_steps(load_all_connections('./data/220ms_client_side_proxy/qperf'), 2), 'rate_start_220ms_client_side_proxy', start_time=0, timespan=5)
+plot(reduce_steps(load_all_connections('./data/220ms_two_proxies/qperf'), 2), 'rate_start_220ms_two_proxies', start_time=0, timespan=5)
+plot(reduce_steps(load_all_connections('./data/220ms_two_proxies_simple/qperf'), 2), 'rate_start_220ms_two_proxies_simple', start_time=0, timespan=5)
+plot(reduce_steps(load_all_connections('./data/220ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_220ms_two_proxies_simple_xse', start_time=0, timespan=5)
 
-plot(reduce_steps(load_all_connections('./data/500ms/qperf'), 2), 'rate_start_500ms', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/500ms_client_side_proxy/qperf'), 2), 'rate_start_500ms_client_side_proxy', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/500ms_two_proxies/qperf'), 2), 'rate_start_500ms_two_proxies', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/500ms_two_proxies_simple/qperf'), 2), 'rate_start_500ms_two_proxies_simple', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/500ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_500ms_two_proxies_simple_xse', zero_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/500ms/qperf'), 2), 'rate_start_500ms', start_time=1, timespan=5)
+plot(reduce_steps(load_all_connections('./data/500ms_client_side_proxy/qperf'), 2), 'rate_start_500ms_client_side_proxy', start_time=1, timespan=5)
+plot(reduce_steps(load_all_connections('./data/500ms_two_proxies/qperf'), 2), 'rate_start_500ms_two_proxies', start_time=1, timespan=5)
+plot(reduce_steps(load_all_connections('./data/500ms_two_proxies_simple/qperf'), 2), 'rate_start_500ms_two_proxies_simple', start_time=1, timespan=5)
+plot(reduce_steps(load_all_connections('./data/500ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_500ms_two_proxies_simple_xse', start_time=1, timespan=5)
 
-plot(reduce_steps(load_all_connections('./data/1000ms/qperf'), 2), 'rate_start_1000ms', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/1000ms_client_side_proxy/qperf'), 2), 'rate_start_1000ms_client_side_proxy', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/1000ms_two_proxies/qperf'), 2), 'rate_start_1000ms_two_proxies', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/1000ms_two_proxies_simple/qperf'), 2), 'rate_start_1000ms_two_proxies_simple', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/1000ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_1000ms_two_proxies_simple_xse', zero_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/1000ms/qperf'), 2), 'rate_start_1000ms', start_time=3, timespan=5)
+plot(reduce_steps(load_all_connections('./data/1000ms_client_side_proxy/qperf'), 2), 'rate_start_1000ms_client_side_proxy', start_time=3, timespan=5)
+plot(reduce_steps(load_all_connections('./data/1000ms_two_proxies/qperf'), 2), 'rate_start_1000ms_two_proxies', start_time=3, timespan=5)
+plot(reduce_steps(load_all_connections('./data/1000ms_two_proxies_simple/qperf'), 2), 'rate_start_1000ms_two_proxies_simple', start_time=3, timespan=5)
+plot(reduce_steps(load_all_connections('./data/1000ms_two_proxies_simple_xse/qperf'), 2), 'rate_start_1000ms_two_proxies_simple_xse', start_time=3, timespan=5)
 
-plot(reduce_steps(load_all_connections('./data/2000ms/qperf'), 2), 'rate_start_2000ms', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/2000ms_client_side_proxy/qperf'), 2), 'rate_start_2000ms_client_side_proxy', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/2000ms_two_proxies/qperf'), 2), 'rate_start_2000ms_two_proxies', zero_at_ttfb=True, timespan=5)
-plot(reduce_steps(load_all_connections('./data/2000ms_two_proxies_simple/qperf'), 2), 'rate_start_2000ms_two_proxies_simple', zero_at_ttfb=True, timespan=5)
+plot(reduce_steps(load_all_connections('./data/2000ms/qperf'), 2), 'rate_start_2000ms', start_time=6, timespan=5)
+plot(reduce_steps(load_all_connections('./data/2000ms_client_side_proxy/qperf'), 2), 'rate_start_2000ms_client_side_proxy', start_time=6, timespan=5)
+plot(reduce_steps(load_all_connections('./data/2000ms_two_proxies/qperf'), 2), 'rate_start_2000ms_two_proxies', start_time=6, timespan=5)
+plot(reduce_steps(load_all_connections('./data/2000ms_two_proxies_simple/qperf'), 2), 'rate_start_2000ms_two_proxies_simple', start_time=6, timespan=5)
